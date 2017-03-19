@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="PaperGraphWidget">
-    </qresource>
+    <qresource prefix="/PaperGraphWidget"/>
+    <qresource prefix="/GraphicsView"/>
+    <qresource prefix="/View"/>
 </RCC>

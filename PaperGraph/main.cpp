@@ -3,8 +3,11 @@
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+	QApplication app(argc, argv);
+	app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
 	PaperGraphWidget w;
 	w.show();
-	return a.exec();
+
+	return app.exec();
 }

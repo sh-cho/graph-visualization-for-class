@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>PaperGraphWidget</string>
   </property>
-  <widget class="QGraphicsView" name="graphicsView">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>581</width>
-     <height>381</height>
-    </rect>
-   </property>
-  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
