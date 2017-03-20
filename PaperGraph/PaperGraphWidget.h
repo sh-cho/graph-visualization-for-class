@@ -15,10 +15,8 @@ using namespace boost;
 
 
 enum vertex_position_t { vertex_position };
-//enum vertex_type_t { vertex_type };
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
-	//BOOST_INSTALL_PROPERTY(vertex, type);
 }
 typedef square_topology<>::point_type point;
 struct simple_edge {

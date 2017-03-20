@@ -34,7 +34,7 @@ const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
 const int SCREEN_SIZE = 500;
 const int NODE_LIMIT = 100;
 
-Graph read_graph(ifstream& in) {
+Graph read_graph(ifstream& in) throw(std::exception) {
 	/**
 	 *	Parse Paper dataset
 	 *	- paper_key, [author_list], publish_year
@@ -47,6 +47,7 @@ Graph read_graph(ifstream& in) {
 	vector<pair<string, string>> edges;
 
 	//String <--> int 양방향 변환을 위해 bidirectional map 상숑
+	//map<string, int> -> <vertex label, vertex index>
 	typedef boost::bimap<string, int> bm_type;
 	bm_type node_ids;
 	vector<simple_edge> edges_indexes;	//int로 변환된 edge
@@ -115,32 +116,27 @@ Graph read_graph(ifstream& in) {
 
 
 	//모든 edge weight 1로 만들기
-	edge_iterator ei, ei_end;
-	for (boost::tie(ei, ei_end)=boost::edges(graph); ei!=ei_end; ++ei) {
-		boost::put(edge_weight, graph, *ei, 1);
-	}
-
-
-	//path finding between two vertices
-	//using dijkstra algorithm
-	//ex) "Werner Keim" ---> "Arpad L. Scholtz" (in dataset 2nd line)
-	qDebug() << "* path finding start";
-	typedef graph_traits<Graph>::vertex_descriptor vertex_descriptor;
-	std::vector<vertex_descriptor> parent(num_vertices(graph));
-	std::vector<int> distance(num_vertices(graph));
-	int start_idx = node_ids.left.find("Werner Keim")->get_right();
-	vertex_descriptor start_v = vertex(start_idx, graph);
-
-	dijkstra_shortest_paths(
-		graph,
-		start_v,
-		predecessor_map(
-			boost::make_iterator_property_map(parent.begin(), get(boost::vertex_index, graph))
-		).distance_map(boost::make_iterator_property_map(distance.begin(), get(boost::vertex_index, graph)))
-	);
-	qDebug() << "* path finding end";
-
-	int aaaa = 3;
+	//edge_iterator ei, ei_end;
+	//for (boost::tie(ei, ei_end)=boost::edges(graph); ei!=ei_end; ++ei) {
+	//	boost::put(edge_weight, graph, *ei, 1);
+	//}
+	////path finding between two vertices
+	////using dijkstra algorithm
+	////ex) "Werner Keim" ---> "Arpad L. Scholtz" (in dataset 2nd line)
+	//qDebug() << "* path finding start";
+	//typedef graph_traits<Graph>::vertex_descriptor vertex_descriptor;
+	//std::vector<vertex_descriptor> parent(num_vertices(graph));
+	//std::vector<int> distance(num_vertices(graph));
+	//int start_idx = node_ids.left.find("Werner Keim")->get_right();
+	//vertex_descriptor start_v = vertex(start_idx, graph);
+	//dijkstra_shortest_paths(
+	//	graph,
+	//	start_v,
+	//	predecessor_map(
+	//		boost::make_iterator_property_map(parent.begin(), get(boost::vertex_index, graph))
+	//	).distance_map(boost::make_iterator_property_map(distance.begin(), get(boost::vertex_index, graph)))
+	//);
+	//qDebug() << "* path finding end";
 
 
 	//graph layout calculation
@@ -159,7 +155,6 @@ Graph read_graph(ifstream& in) {
 	rectangle_topology<> rect_top(gen,
 		-SCREEN_SIZE/2, -SCREEN_SIZE/2,
 		SCREEN_SIZE/2, SCREEN_SIZE/2);
-	std::vector<Topology::point_difference_type> displacements(num_vertices(graph));
 	
 	switch (LAYOUT_MODE) {
 	case GRAPH_LAYOUT::RANDOM_LAYOUT:
@@ -180,17 +175,6 @@ Graph read_graph(ifstream& in) {
 	//	break;
 
 	case GRAPH_LAYOUT::FRUCHTERMAN_REINGOLD_LAYOUT:
-		//fruchterman_reingold_force_directed_layout(graph,
-		//	get(vertex_position, graph),
-		//	topology,
-		//	square_distance_attractive_force(),
-		//	square_distance_repulsive_force(),
-		//	all_force_pairs(),
-		//	linear_cooling<double>(SCREEN_SIZE/2),
-		//	make_iterator_property_map(displacements.begin(),
-		//		get(vertex_index, graph),
-		//		Topology::point_difference_type())
-		//);
 		fruchterman_reingold_force_directed_layout(graph,
 			get(vertex_position, graph),
 			topology,
@@ -216,8 +200,8 @@ int main(int argc, char *argv[])
 		w.print_graph(read_graph(fin));
 		fin.close();
 	} catch (const std::exception& e) {
-		qDebug() << "Error: " << e.what() << endl;
-		return -1;
+		qDebug() << "Error: " << e.what();
+		return EXIT_FAILURE;
 	}
 
 
