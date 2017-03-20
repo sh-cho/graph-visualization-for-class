@@ -14,6 +14,7 @@ private:
 	int x;
 	int y;
 	QColor color;
+	QString label;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -21,7 +22,7 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-	NodeItem(int x, int y);
+	NodeItem(int x, int y, QString label);
 
 	QRectF boundingRect() const override;
 	QPainterPath shape() const override;

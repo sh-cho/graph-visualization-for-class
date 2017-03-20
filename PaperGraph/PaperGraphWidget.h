@@ -5,8 +5,8 @@
 #include <QGraphicsScene>
 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/kamada_kawai_spring_layout.hpp>
-#include <boost/graph/random_layout.hpp>
+#include <boost/graph/topology.hpp>
+#include <boost/graph/graph_traits.hpp>
 
 #include "ui_PaperGraphWidget.h"
 
@@ -33,7 +33,6 @@ typedef adjacency_list<
 	listS,	//VertexList
 	undirectedS,
 	//vertex properties
-	//VertexProperties,
 	VertexProperties,
 	//edge properties
 	boost::property<edge_weight_t, double>
