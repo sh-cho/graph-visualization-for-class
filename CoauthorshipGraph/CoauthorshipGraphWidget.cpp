@@ -16,7 +16,7 @@ CoauthorshipGraphWidget::CoauthorshipGraphWidget(QWidget *parent)
 	layout->addWidget(view);
 	setLayout(layout);
 
-	setWindowTitle(tr("dblp paper graph visualization"));
+	setWindowTitle(tr("dblp coauthor graph visualization"));
 }
 
 void CoauthorshipGraphWidget::print_graph(const Graph & graph)
