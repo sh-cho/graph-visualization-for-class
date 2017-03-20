@@ -14,22 +14,27 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	layout->addWidget(view);
 	setLayout(layout);
 
-	setWindowTitle(tr("Paper Graph Visualization"));
+	setWindowTitle(tr("dblp paper graph visualization"));
+}
+
+void PaperGraphWidget::print_graph(const Graph & graph)
+{
+	//print graph
 }
 
 void PaperGraphWidget::initscene()
 {
 	scene = new QGraphicsScene(this);
 
-	int x = 0, y;
-	for (int i=-11000; i<11000; i+=110) {
-		++x;
-		y = 0;
-		for (int j=-7000; j<7000; j+=70) {
-			++y;
-			QGraphicsItem *item = new NodeItem(x, y);
-			item->setPos(QPointF(i, j));
-			scene->addItem(item);
-		}
-	}
+	//int x = 0, y;
+	//for (int i=-11000; i<11000; i+=110) {
+	//	++x;
+	//	y = 0;
+	//	for (int j=-7000; j<7000; j+=70) {
+	//		++y;
+	//		QGraphicsItem *item = new NodeItem(x, y);
+	//		item->setPos(QPointF(i, j));
+	//		scene->addItem(item);
+	//	}
+	//}
 }
