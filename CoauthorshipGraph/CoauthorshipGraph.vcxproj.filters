@@ -24,12 +24,12 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{cdaff76f-4aa7-4983-8cac-737d2e46d88f}</UniqueIdentifier>
+      <UniqueIdentifier>{dafd27f3-f9f8-4032-9f31-012074d238cf}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{b54e1844-dfd1-4f02-a9f5-9a0fff1477c8}</UniqueIdentifier>
+      <UniqueIdentifier>{9dcbc68a-2887-4708-a7a9-9ae1dad8cbb6}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -38,20 +38,17 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PaperGraphWidget.cpp">
+    <ClCompile Include="CoauthorshipGraphWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_PaperGraphWidget.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_CoauthorshipGraphWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_PaperGraphWidget.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_CoauthorshipGraphWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_PaperGraphWidget.cpp">
+    <ClCompile Include="GeneratedFiles\qrc_CoauthorshipGraphWidget.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NodeItem.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsView.cpp">
       <Filter>Source Files</Filter>
@@ -62,15 +59,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_GraphicsView.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="NodeItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="PaperGraphWidget.h">
+    <CustomBuild Include="CoauthorshipGraphWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="PaperGraphWidget.ui">
+    <CustomBuild Include="CoauthorshipGraphWidget.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="PaperGraphWidget.qrc">
+    <CustomBuild Include="CoauthorshipGraphWidget.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GraphicsView.h">
@@ -78,7 +78,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_PaperGraphWidget.h">
+    <ClInclude Include="GeneratedFiles\ui_CoauthorshipGraphWidget.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="NodeItem.h">

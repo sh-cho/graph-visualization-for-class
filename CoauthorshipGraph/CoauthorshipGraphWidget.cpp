@@ -1,10 +1,10 @@
-#include "PaperGraphWidget.h"
+#include "CoauthorshipGraphWidget.h"
 #include "NodeItem.h"
 #include "GraphicsView.h"
 
 #include <string>
 
-PaperGraphWidget::PaperGraphWidget(QWidget *parent)
+CoauthorshipGraphWidget::CoauthorshipGraphWidget(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
@@ -19,7 +19,7 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	setWindowTitle(tr("dblp paper graph visualization"));
 }
 
-void PaperGraphWidget::print_graph(const Graph & graph)
+void CoauthorshipGraphWidget::print_graph(const Graph & graph)
 {
 	//print graph
 	typedef square_topology<> Topology;
@@ -27,7 +27,7 @@ void PaperGraphWidget::print_graph(const Graph & graph)
 	const int rect_sz = 4;
 	auto position = get(vertex_position, graph);
 	auto label = get(vertex_name, graph);
-	
+
 
 
 	//print edges
@@ -42,9 +42,9 @@ void PaperGraphWidget::print_graph(const Graph & graph)
 		Point p2 = position[v];
 
 		/*line = scene->addLine(
-			p1[0], p1[1],
-			p2[0], p2[1],
-			QPen(Qt::black)
+		p1[0], p1[1],
+		p2[0], p2[1],
+		QPen(Qt::black)
 		);*/
 		//QGraphicsItem *edge =
 		//	new EdgeItem(p1[0], p1[1], p2[0], p2[1]);
@@ -70,7 +70,7 @@ void PaperGraphWidget::print_graph(const Graph & graph)
 	}
 }
 
-void PaperGraphWidget::initscene()
+void CoauthorshipGraphWidget::initscene()
 {
 	scene = new QGraphicsScene(this);
 

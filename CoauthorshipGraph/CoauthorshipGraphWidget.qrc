@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/CoauthorshipGraphWidget"/>
+    <qresource prefix="/GraphicsView"/>
+    <qresource prefix="/View"/>
+</RCC>
