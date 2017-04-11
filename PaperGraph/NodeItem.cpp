@@ -1,8 +1,18 @@
 #include "NodeItem.h"
 #include <QtWidgets>
+#include <QMessageBox>
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
+	/*if (event->button() == Qt::LeftButton) {
+		QMessageBox msgbox;
+		msgbox.setText("hi");
+		msgbox.setInformativeText("hi2");
+		msgbox.setStandardButtons(QMessageBox::Ok);
+		msgbox.setDefaultButton(QMessageBox::Ok);
+
+		msgbox.exec();
+	}*/
 }
 
 void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
@@ -13,16 +23,17 @@ void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
 }
 
-NodeItem::NodeItem(int x, int y, QString label)
+NodeItem::NodeItem(double x, double y, QColor color, QString label)
 {
+	//node constructor
 	this->x = x;
 	this->y = y;
-	this->color = QColor(Qt::green);
+	this->color = color;
 	this->label = label;
 	setZValue(1);
 	
-	setFlags(ItemIsSelectable | ItemIsMovable);
-	setAcceptHoverEvents(true);
+	//setFlags(ItemIsSelectable | ItemIsMovable);
+	//setAcceptHoverEvents(true);
 }
 
 QRectF NodeItem::boundingRect() const
@@ -33,7 +44,6 @@ QRectF NodeItem::boundingRect() const
 QPainterPath NodeItem::shape() const
 {
 	QPainterPath path;
-	//path.addRect(14, 14, 82, 42);
 	path.addRect(0, 0, NODE_SIZE, NODE_SIZE);
 	return path;
 }
@@ -42,23 +52,24 @@ void NodeItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option
 {
 	Q_UNUSED(widget);
 
-	//label 출력
-	QFont font("Gulim", 10);
-	font.setStyleStrategy(QFont::ForceOutline);
-	painter->setFont(font);
-	painter->save();
-	painter->scale(0.3, 0.3);
-	painter->drawText(0, 0, label);
-	painter->restore();
-
-
-	//Rectangle 출력
-	QColor fillColor = (option->state & QStyle::State_Selected) ? color.dark(150) : color;
-	if (option->state & QStyle::State_MouseOver) fillColor = fillColor.light(125);
-	QPen pen = painter->pen();
+	//set node pen style
+	QPen oldPen = painter->pen();
+	QPen pen = oldPen;
 	pen.setWidth(0);
 	pen.setColor(QColor(Qt::black));
 	painter->setPen(pen);
+
+	//label 출력
+	QFont font("Gulim", 3);	//set font, font size
+	painter->setFont(font);
+	painter->save();
+	painter->drawText(x, y, label);
+	painter->restore();
+
+
+	//node rectangle 출력
+	QColor fillColor = (option->state & QStyle::State_Selected) ? color.dark(150) : color;
+	if (option->state & QStyle::State_MouseOver) fillColor = fillColor.light(125);
 	painter->setBrush(QBrush(fillColor));
-	painter->drawRect(0, 0, NODE_SIZE, NODE_SIZE);
+	painter->drawRect(x, y, NODE_SIZE, NODE_SIZE);
 }

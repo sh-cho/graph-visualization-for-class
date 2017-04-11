@@ -1,20 +1,17 @@
-#ifndef NODEITEM_H
-#define NODEITEM_H
+#ifndef EDGEITEM_H
+#define EDGEITEM_H
 
 #include <QColor>
 #include <QGraphicsItem>
 
 
-const int NODE_SIZE = 4;
-
-class NodeItem
+class EdgeItem
 	: public QGraphicsItem
 {
 private:
-	double x;
-	double y;
+	double x1, y1, x2, y2;
+	int width;
 	QColor color;
-	QString label;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -22,11 +19,11 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-	NodeItem(double x, double y, QColor color, QString label);
+	EdgeItem(double x1, double y1, double x2, double y2, QColor color, int width);
 
 	QRectF boundingRect() const override;
 	QPainterPath shape() const override;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
-#endif // NODEITEM_H
+#endif // EDGEITEM_H

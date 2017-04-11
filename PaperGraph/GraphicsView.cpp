@@ -1,5 +1,6 @@
 #include "GraphicsView.h"
 #include <qmath.h>
+#include <QKeyEvent>
 
 //View
 View::View(const QString& name, QWidget *parent)
@@ -11,8 +12,6 @@ View::View(const QString& name, QWidget *parent)
 	graphicsView->setOptimizationFlags(QGraphicsView::DontSavePainterState);
 	graphicsView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 	graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
-	//connect
 
 	//layout
 	QGridLayout *topLayout = new QGridLayout;
@@ -29,11 +28,27 @@ QGraphicsView* View::view() const
 
 void View::setupMatrix()
 {
-	qreal scale = qPow(qreal(2), qreal(2));
+	qreal scale = qPow(qreal(1), qreal(1));
 
 	QMatrix matrix;
 	matrix.scale(scale, scale);
 	matrix.rotate(qreal(0));
 
 	graphicsView->setMatrix(matrix);
+}
+
+#ifndef QT_NO_WHEELEVENT
+void GraphicsView::wheelEvent(QWheelEvent * event)
+{
+	scaleView(pow((double)2, event->delta() / 240.0));
+}
+#endif
+
+void GraphicsView::scaleView(qreal scaleFactor)
+{
+	qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
+	if (factor < 0.07 || factor > 100)
+		return;
+
+	scale(scaleFactor, scaleFactor);
 }

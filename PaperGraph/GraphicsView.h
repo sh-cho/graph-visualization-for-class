@@ -16,6 +16,12 @@ class GraphicsView
 private:
 	View* view;
 
+protected:
+#ifndef QT_NO_WHEELEVENT
+	void wheelEvent(QWheelEvent *event) override;
+#endif
+	void scaleView(qreal scaleFactor);
+
 public:
 	GraphicsView(View *v): QGraphicsView(), view(v) {};
 };
