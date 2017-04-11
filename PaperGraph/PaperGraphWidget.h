@@ -7,7 +7,7 @@
 #include <fstream>
 
 #include "GraphItem.h"
-#include "ui_PaperGraphWidget.h"
+//#include "ui_PaperGraphWidget.h"
 
 
 class PaperGraphWidget : public QWidget
@@ -17,6 +17,7 @@ class PaperGraphWidget : public QWidget
 public:
 	PaperGraphWidget(QWidget *parent = 0);
 	void print_graph(ifstream& fin);
+	void path_highlight();
 
 private slots:
 	void handleSelectionChanged(int idx);
@@ -24,8 +25,9 @@ private slots:
 private:
 	void initscene();
 
-	Ui::PaperGraphWidgetClass ui;
+	//Ui::PaperGraphWidgetClass ui;
 	QGraphicsScene *scene;
+	GraphItem *graphItem;
 };
 
 #endif // PAPERGRAPHWIDGET_H

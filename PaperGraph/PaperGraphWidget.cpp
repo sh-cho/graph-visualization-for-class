@@ -10,7 +10,7 @@
 PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	: QWidget(parent)
 {
-	ui.setupUi(this);
+	//ui.setupUi(this);
 	initscene();
 
 	View *view = new View("temp view");
@@ -33,19 +33,28 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 
 void PaperGraphWidget::print_graph(ifstream& fin)
 {
-	QGraphicsItem *graph_item = new GraphItem(fin);
-	graph_item->setPos(0, 0);
-	scene->addItem(graph_item);
+	//QGraphicsItem *graph_item = new GraphItem(fin);
+	if (graphItem)
+		throw std::exception("already have graph item");
+
+	graphItem = new GraphItem(fin);
+	graphItem->setPos(0, 0);
+	scene->addItem(graphItem);
+}
+
+void PaperGraphWidget::path_highlight()
+{
+	graphItem->path_highlighting(std::string(""), std::string(""));
 }
 
 void PaperGraphWidget::handleSelectionChanged(int idx)
 {
-	/*QMessageBox::information(this, "QCombobox", 
-		"idx: "+QString::number(idx));*/
-	if (idx==0) {
+	QMessageBox::information(this, "QCombobox", 
+		"idx: "+QString::number(idx));
+	/*if (idx==0) {
 	} else if (idx==1) {
 	} else {
-	}
+	}*/
 }
 
 void PaperGraphWidget::initscene()

@@ -246,15 +246,6 @@ void GraphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	if (!graph)
 		return;
 
-	//debug
-	//-> x, y, w, h
-	//현재 Graph의 bounding rect 출력
-	/*QPen oldPen = painter->pen();
-	QPen pen = oldPen;
-	pen.setColor(Qt::red);
-	painter->setPen(pen);
-	painter->drawRect(QRectF(-SCREEN_SIZE/2, -SCREEN_SIZE/2, SCREEN_SIZE, SCREEN_SIZE));*/
-
 	//print edges
 	for (auto edge: edgeList) {
 		edge->paint(painter, option, widget);
@@ -263,6 +254,17 @@ void GraphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	//print nodes
 	for (auto node: nodeList) {
 		node->paint(painter, option, widget);
+	}
+}
+
+void GraphItem::path_highlighting(std::string start, std::string end)
+{
+	//path highlight
+	//nodeList, edgeList 속성을 수정
+	for (auto& n: nodeList) {
+		if (n->getLabel() == QString("Seongsoo Park")) {
+			n->setColor(QColor(255, 0, 0));
+		}
 	}
 }
 

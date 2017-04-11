@@ -1,4 +1,6 @@
 #include "PaperGraphWidget.h"
+#include "MainWindow.h"
+
 #include <QtWidgets/QApplication>
 #include <QDebug>
 
@@ -28,18 +30,21 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	
-	PaperGraphWidget w;
+	//PaperGraphWidget w;
+	MainWindow m;
 
 	try {
 		ifstream fin(PAPER_FILENAME);
-		w.print_graph(fin);
+		//w.print_graph(fin);
+		m.print_graph(fin);
 		fin.close();
 	} catch (const std::exception& e) {
 		qDebug() << "Error: " << e.what();
 		return EXIT_FAILURE;
 	}
 
-	w.show();
+	//w.show();
+	m.show();
 
 	return app.exec();
 }
