@@ -6,7 +6,6 @@
 PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	: QWidget(parent)
 {
-	//ui.setupUi(this);
 	initscene();
 
 	View *view = new View("temp view");
@@ -41,6 +40,12 @@ void PaperGraphWidget::print_graph(ifstream& fin)
 void PaperGraphWidget::path_highlight()
 {
 	graphItem->path_highlighting(std::string(""), std::string(""));
+	scene->update();
+}
+
+void PaperGraphWidget::reset_color()
+{
+	graphItem->reset_color();
 	scene->update();
 }
 

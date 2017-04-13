@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "stdafx.h"
-//#include "ui_MainWindow.h"
 #include "PaperGraphWidget.h"
 
 class MainWindow : public QMainWindow
@@ -14,14 +13,22 @@ public:
 	~MainWindow();
 
 	void print_graph(std::ifstream& fin);
-	void test_func();
+	/*void test_highlighting();*/
 
 private:
-	//Ui::MainWindow ui;
 	PaperGraphWidget *graphWidget;
 
-	QMenu *fileMenu;
-	QAction *testAct;
+	QMenu *actionMenu;
+	QAction *testHighlightAct;
+	QAction *resetColorAct;
+
+private:
+	void createActions();
+	void createMenus();
+
+private slots:
+	void test_highlighting();
+	void reset_color();
 };
 
 #endif // MAINWINDOW_H

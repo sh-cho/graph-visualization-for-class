@@ -256,7 +256,7 @@ void GraphItem::path_highlighting(std::string start, std::string end)
 void GraphItem::reset_color()
 {
 	for (auto& n: nodeList) {
-		n->setColor(QColor());
+		n->setColor(QColor(Qt::green));
 	}
 }
 

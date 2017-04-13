@@ -60,7 +60,6 @@ public:
 	//methods
 	void path_highlighting(std::string start, std::string end);
 	void reset_color();
-	//
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
