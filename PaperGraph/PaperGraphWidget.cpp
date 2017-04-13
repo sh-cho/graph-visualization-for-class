@@ -45,6 +45,7 @@ void PaperGraphWidget::print_graph(ifstream& fin)
 void PaperGraphWidget::path_highlight()
 {
 	graphItem->path_highlighting(std::string(""), std::string(""));
+	scene->update();
 }
 
 void PaperGraphWidget::handleSelectionChanged(int idx)

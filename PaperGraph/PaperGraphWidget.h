@@ -27,7 +27,7 @@ private:
 
 	//Ui::PaperGraphWidgetClass ui;
 	QGraphicsScene *scene;
-	GraphItem *graphItem;
+	GraphItem *graphItem = nullptr;
 };
 
 #endif // PAPERGRAPHWIDGET_H

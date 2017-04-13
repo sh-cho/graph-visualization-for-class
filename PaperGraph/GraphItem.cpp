@@ -266,6 +266,8 @@ void GraphItem::path_highlighting(std::string start, std::string end)
 			n->setColor(QColor(255, 0, 0));
 		}
 	}
+
+	
 }
 
 //event handler

@@ -40,4 +40,5 @@ void MainWindow::test_func()
 	/*QMessageBox::information(this, "test", 
 		"test: "+QString::number(11));*/
 	graphWidget->path_highlight();
+	//graphWidget->update();
 }
