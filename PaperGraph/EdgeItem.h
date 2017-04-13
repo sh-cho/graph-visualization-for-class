@@ -1,8 +1,7 @@
 #ifndef EDGEITEM_H
 #define EDGEITEM_H
 
-#include <QColor>
-#include <QGraphicsItem>
+#include "stdafx.h"
 
 
 class EdgeItem

@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "GraphicsView.h"
-#include <qmath.h>
-#include <QKeyEvent>
 
 //View
 View::View(const QString& name, QWidget *parent)

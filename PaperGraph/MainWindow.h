@@ -1,13 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QtWidgets>
-#include <QGridLayout>
-#include <QtGui>
-
-#include <iostream>
-
+#include "stdafx.h"
 //#include "ui_MainWindow.h"
 #include "PaperGraphWidget.h"
 

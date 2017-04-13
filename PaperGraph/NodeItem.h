@@ -1,9 +1,7 @@
 #ifndef NODEITEM_H
 #define NODEITEM_H
 
-#include <QColor>
-#include <QGraphicsItem>
-
+#include "stdafx.h"
 
 const int NODE_SIZE = 4;
 

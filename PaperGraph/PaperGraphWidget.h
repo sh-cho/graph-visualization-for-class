@@ -1,14 +1,10 @@
 #ifndef PAPERGRAPHWIDGET_H
 #define PAPERGRAPHWIDGET_H
 
-#include <QtWidgets/QWidget>
-#include <QGraphicsScene>
-
-#include <fstream>
+#include "stdafx.h"
 
 #include "GraphItem.h"
 //#include "ui_PaperGraphWidget.h"
-
 
 class PaperGraphWidget : public QWidget
 {

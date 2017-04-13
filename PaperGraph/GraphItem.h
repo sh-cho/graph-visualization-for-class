@@ -1,16 +1,7 @@
 #ifndef GRAPHITEM_H
 #define GRAPHITEM_H
 
-#include <QGraphicsItem>
-#include <QList>
-#include <QColor>
-
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/topology.hpp>
-#include <boost/graph/graph_traits.hpp>
-
-#include <fstream>
-
+#include "stdafx.h"
 #include "NodeItem.h"
 #include "EdgeItem.h"
 
@@ -68,6 +59,7 @@ public:
 
 	//methods
 	void path_highlighting(std::string start, std::string end);
+	void reset_color();
 	//
 
 protected:

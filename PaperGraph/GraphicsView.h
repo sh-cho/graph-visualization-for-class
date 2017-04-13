@@ -1,13 +1,10 @@
 #ifndef GRAPHICSVIEW_H
 #define GRAPHICSVIEW_H
 
-#include <QFrame>
-#include <QGraphicsView>
-#include <QGridLayout>
+#include "stdafx.h"
 
 //pre-declare
 class View;
-
 
 class GraphicsView
 	: public QGraphicsView

@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "EdgeItem.h"
-#include <QtWidgets>
 
 void EdgeItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {

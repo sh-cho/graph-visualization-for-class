@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "NodeItem.h"
-#include <QtWidgets>
-#include <QMessageBox>
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {

@@ -1,11 +1,7 @@
+#include "stdafx.h"
 #include "PaperGraphWidget.h"
 #include "NodeItem.h"
 #include "GraphicsView.h"
-
-#include <string>
-#include <QComboBox>
-#include <QMessageBox>
-#include <QtGui>
 
 PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	: QWidget(parent)

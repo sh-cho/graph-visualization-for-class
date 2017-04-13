@@ -1,25 +1,6 @@
+#include "stdafx.h"
 #include "PaperGraphWidget.h"
 #include "MainWindow.h"
-
-#include <QtWidgets/QApplication>
-#include <QDebug>
-
-#include <algorithm>
-#include <exception>
-#include <fstream>
-#include <iterator>
-#include <string>
-#include <map>
-#include <vector>
-
-#include <boost/graph/fruchterman_reingold.hpp>
-//#include <boost/graph/kamada_kawai_spring_layout.hpp>
-#include <boost/graph/random_layout.hpp>
-#include <boost/graph/circle_layout.hpp>
-#include <boost/algorithm/string.hpp>	//boost::split
-#include <boost/bimap.hpp>
-
-using namespace std;
 
 /**
  *	Constants

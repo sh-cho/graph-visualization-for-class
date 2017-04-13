@@ -1,22 +1,5 @@
+#include "stdafx.h"
 #include "GraphItem.h"
-
-#include <boost/graph/fruchterman_reingold.hpp>
-#include <boost/graph/random_layout.hpp>
-#include <boost/graph/circle_layout.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/algorithm/string.hpp>	//boost::split
-#include <boost/bimap.hpp>
-#include <boost/regex.hpp>
-
-#include <exception>
-#include <iterator>
-#include <string>
-#include <map>
-#include <vector>
-
-#include <QDebug>
-#include <QtWidgets>
-
 
 GraphItem::GraphItem(ifstream& fin)
 {
@@ -268,6 +251,13 @@ void GraphItem::path_highlighting(std::string start, std::string end)
 	}
 
 	
+}
+
+void GraphItem::reset_color()
+{
+	for (auto& n: nodeList) {
+		n->setColor(QColor());
+	}
 }
 
 //event handler
