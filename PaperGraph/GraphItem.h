@@ -9,31 +9,36 @@ using namespace std;
 using namespace boost;
 
 
-enum GRAPH_LAYOUT {
-	RANDOM_LAYOUT,
-	CIRCLE_LAYOUT,
-	//KAMADA_KAWAI_LAYOUT,
-	FRUCHTERMAN_REINGOLD_LAYOUT	//slow
-};
+//enum GRAPH_LAYOUT {
+//	RANDOM_LAYOUT,
+//	CIRCLE_LAYOUT,
+//	//KAMADA_KAWAI_LAYOUT,
+//	FRUCHTERMAN_REINGOLD_LAYOUT	//slow
+//};
+
 /**
  *	Constants
  */
-const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
-const int SCREEN_SIZE = 300;
-const int NODE_LIMIT = 100;
-
+//const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
+//const int SCREEN_SIZE = 300;
+//const int NODE_LIMIT = 100;
+//const boost::regex paper_reg("(conf|journals).*");
 
 enum vertex_position_t { vertex_position };
+enum vertex_type_t { vertex_type };
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
+	BOOST_INSTALL_PROPERTY(vertex, type);
 }
 typedef square_topology<>::point_type point;
 struct simple_edge {
 	int first, second;
 };
+
 typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_name_t, std::string,
-	boost::property<vertex_position_t, point>>
+	boost::property<vertex_position_t, point, 
+	boost::property<vertex_type_t, int>>>
 > VertexProperties;
 typedef adjacency_list<
 	listS,	//outEdgeList

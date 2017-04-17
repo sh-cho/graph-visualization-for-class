@@ -39,3 +39,25 @@
 
 using namespace boost;
 using namespace std;
+
+#define	NODE_PAPER	1
+#define	NODE_AUTHOR	2
+
+namespace {
+	enum GRAPH_LAYOUT {
+		RANDOM_LAYOUT,
+		CIRCLE_LAYOUT,
+		//KAMADA_KAWAI_LAYOUT,
+		FRUCHTERMAN_REINGOLD_LAYOUT	//slow
+	};
+
+	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
+	const int SCREEN_SIZE = 300;
+	const int NODE_LIMIT = 100;
+	
+	const char* PAPER_FILENAME = "dblp-paper.txt";
+}
+
+namespace boost {
+	const regex paper_reg("(conf|journals).*");
+}

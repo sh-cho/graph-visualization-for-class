@@ -78,10 +78,19 @@ GraphItem::GraphItem(ifstream& fin)
 		//index: 0 ~ ...
 		//name : map의 value(i) 기준으로 찾은 Key
 		//		map --> map<string, int> (boost bidirectional map)
+		std::string node_label = node_ids.right.find(i)->get_left();
 		boost::put(vertex_index, *graph, *vi, i);
-		boost::put(vertex_name, *graph, *vi,
-			node_ids.right.find(i)->get_left());
-	
+		boost::put(vertex_name, *graph, *vi, node_label);
+
+		//node type 설정
+		if (boost::regex_match(node_label, paper_reg)) {
+			//Paper
+			boost::put(vertex_type, *graph, *vi, NODE_PAPER);
+		} else {
+			//Author
+			boost::put(vertex_type, *graph, *vi, NODE_AUTHOR);
+		}
+
 		++i;
 	}
 	qDebug() << "* set vertex property end";
@@ -249,8 +258,6 @@ void GraphItem::path_highlighting(std::string start, std::string end)
 			n->setColor(QColor(255, 0, 0));
 		}
 	}
-
-	
 }
 
 void GraphItem::reset_color()
