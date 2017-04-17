@@ -54,9 +54,9 @@ void PaperGraphWidget::read_more()
 	scene->update();
 }
 
-void PaperGraphWidget::path_highlight()
+void PaperGraphWidget::might_know()
 {
-	graphItem->path_highlighting(std::string(""), std::string(""));
+	graphItem->might_know();
 	scene->update();
 }
 

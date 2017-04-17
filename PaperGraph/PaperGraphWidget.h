@@ -16,7 +16,7 @@ public:
 
 //main window slots
 	void read_more();
-	void path_highlight();
+	void might_know();
 	void topk();
 	void reset_color();
 

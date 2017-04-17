@@ -108,7 +108,7 @@ void GraphItem::read_more()
 		boost::put(vertex_name, *graph, *vi, node_label);
 		boost::put(vertex_record, *graph, *vi, 0);
 
-		qDebug() << "** index: " << i << ", name: " << node_label.c_str();
+		//qDebug() << "** index: " << i << ", name: " << node_label.c_str();
 
 		//node type 설정
 		if (boost::regex_match(node_label, paper_reg)) {
@@ -268,13 +268,64 @@ void GraphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	}
 }
 
-void GraphItem::path_highlighting(std::string start, std::string end)
+void GraphItem::might_know()
 {
-	//path highlight
-	//nodeList, edgeList 속성을 수정
+	// 알 수도 있는 연구원 찾기
+	vertex_iterator vi, vi_end, vtarget;
+	Graph::adjacency_iterator ai, ai_end;
+	vector<string> might_know_vec;
+	
+	auto label = get(vertex_name, *graph);
+	auto nodeType = get(vertex_type, *graph);
+
+	// 회색 색칠
+	for (auto& n : nodeList) {
+		if (n->getLabel().toStdString() != TARGET_AUTHOR_NAME) {
+			n->setColor(QColor(Qt::lightGray));
+		} else {
+			n->setColor(QColor(Qt::blue));
+		}
+	}
+
+	// find target node
+	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi!=vi_end; ++vi) {
+		if (label[*vi] == std::string(TARGET_AUTHOR_NAME)) {
+			vtarget = vi;
+			break;
+		}
+	}
+
+	// bfs
+	//std::queue<vertex_iterator> q;
+	//q.push(vtarget);
+	//while (!q.empty()) {
+	//	/*auto next_vi = q.front();
+	//	q.pop();
+
+	//	if (nodeType[*next_vi] == NODE_TYPE::NODE_PAPER)
+	//		continue;
+
+	//	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*next_vi, *graph);
+	//		ai != ai_end; ++ai) {
+	//		if (nodeType[*ai] == NODE_TYPE::NODE_PAPER)
+	//			continue;
+	//		else
+	//			q.push(ai);
+	//	}*/
+	//}
+
+	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vtarget, *graph);
+		ai != ai_end;
+		++ai) {
+		might_know_vec.push_back(label[*ai]);
+	}
+
+	// highlight
 	for (auto& n: nodeList) {
-		if (n->getLabel() == QString("Seongsoo Park")) {
-			n->setColor(QColor(255, 0, 0));
+		if (std::find(might_know_vec.begin(), might_know_vec.end(), n->getLabel().toStdString())
+			!= might_know_vec.end()) {
+			//found
+			n->setColor(Qt::red);
 		}
 	}
 }
@@ -318,20 +369,24 @@ void GraphItem::topK_highlight()
 		int record_cnt = 0;
 		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vi, *graph);
 			ai != ai_end; ++ai) {
-			if (nodeType[*vi] == NODE_TYPE::NODE_PAPER) {
+			if (nodeType[*ai] == NODE_TYPE::NODE_PAPER) {
 				++record_cnt;
 			}
 		}
 
 		boost::put(vertex_record, *graph, *vi, record_cnt);
 		heap.push(make_pair(record_cnt, nodeLabel[*vi]));
+
+		//qDebug() << record_cnt;
 	}
 	
 	//get top K records
 	pair<int, string> topk_arr[TOP_K];
 	for (int i = 0; i < TOP_K; ++i) {
 		topk_arr[i] = heap.pop();
+		qDebug() << "topk["<<i<<"] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
 	}
+	
 
 	for (auto& n: nodeList) {
 		auto label = n->getLabel();
@@ -343,8 +398,6 @@ void GraphItem::topK_highlight()
 			}
 		}
 	}
-
-	//delete[] topk_arr;
 }
 
 //event handler

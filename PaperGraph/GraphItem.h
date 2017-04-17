@@ -26,7 +26,7 @@ public:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 	//methods
-	void path_highlighting(std::string start, std::string end);
+	void might_know();
 	void reset_color();
 	void topK_highlight();
 

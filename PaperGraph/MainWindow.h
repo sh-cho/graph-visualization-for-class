@@ -22,7 +22,7 @@ private:
 	QMenu *fileMenu;
 	QAction *readMoreAct;
 	QMenu *actionMenu;
-	QAction *testHighlightAct;
+	QAction *mightKnowAct;
 	QAction *topkAct;
 	QAction *resetColorAct;
 
@@ -32,7 +32,7 @@ private:
 
 private slots:
 	void read_more();
-	void test_highlighting();
+	void might_know();
 	void topk();
 	void reset_color();
 };

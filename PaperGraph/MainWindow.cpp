@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 	statusBar()->showMessage(message);
 
 	setMinimumSize(160, 160);
-	resize(800, 600);
+	resize(1200, 650);
 }
 
 MainWindow::~MainWindow()
@@ -44,9 +44,9 @@ void MainWindow::createActions()
 	readMoreAct->setStatusTip(tr("read more lines from file"));
 	connect(readMoreAct, &QAction::triggered, this, &MainWindow::read_more);
 
-	testHighlightAct = new QAction(tr("Highlight"), this);
-	testHighlightAct->setStatusTip(tr("Highlighting node"));
-	connect(testHighlightAct, &QAction::triggered, this, &MainWindow::test_highlighting);
+	mightKnowAct = new QAction(tr("Might know"), this);
+	mightKnowAct->setStatusTip(tr("highlight a research you might know"));
+	connect(mightKnowAct, &QAction::triggered, this, &MainWindow::might_know);
 	topkAct = new QAction(tr("topK"), this);
 	topkAct->setStatusTip(tr("highlight who was top k papers"));
 	connect(topkAct, &QAction::triggered, this, &MainWindow::topk);
@@ -61,7 +61,7 @@ void MainWindow::createMenus()
 	fileMenu->addAction(readMoreAct);
 
 	actionMenu = menuBar()->addMenu(tr("&Actions"));
-	actionMenu->addAction(testHighlightAct);
+	actionMenu->addAction(mightKnowAct);
 	actionMenu->addAction(topkAct);
 	actionMenu->addAction(resetColorAct);
 }
@@ -75,12 +75,9 @@ void MainWindow::read_more()
 	graphWidget->read_more();
 }
 
-void MainWindow::test_highlighting()
+void MainWindow::might_know()
 {
-	/*QMessageBox::information(this, "test", 
-	"test: "+QString::number(11));*/
-	graphWidget->path_highlight();
-	//graphWidget->update();
+	graphWidget->might_know();
 }
 
 void MainWindow::topk()
