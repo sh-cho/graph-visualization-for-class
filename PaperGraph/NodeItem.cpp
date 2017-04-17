@@ -22,13 +22,14 @@ void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
 }
 
-NodeItem::NodeItem(double x, double y, QColor color, QString label)
+NodeItem::NodeItem(double x, double y, QColor color, QString label, int type)
 {
 	//node constructor
 	this->x = x;
 	this->y = y;
 	this->color = color;
 	this->label = label;
+	this->type = type;
 	setZValue(1);
 	
 	//setFlags(ItemIsSelectable | ItemIsMovable);

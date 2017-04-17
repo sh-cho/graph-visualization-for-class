@@ -40,10 +40,14 @@
 using namespace boost;
 using namespace std;
 
-#define	NODE_PAPER	1
-#define	NODE_AUTHOR	2
-
+/* constants */
 namespace {
+	/* enums */
+	enum NODE_TYPE {
+		NODE_PAPER,
+		NODE_AUTHOR
+	};
+
 	enum GRAPH_LAYOUT {
 		RANDOM_LAYOUT,
 		CIRCLE_LAYOUT,
@@ -51,13 +55,20 @@ namespace {
 		FRUCHTERMAN_REINGOLD_LAYOUT	//slow
 	};
 
-	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
-	const int SCREEN_SIZE = 300;
-	const int NODE_LIMIT = 100;
-	
+	/* file io */
 	const char* PAPER_FILENAME = "dblp-paper.txt";
+
+	/* visualization */
+	const int NODE_SIZE = 4;
+	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
+	const int SCREEN_SIZE = 1000;
+	const int READ_LINE_UNIT = 100;	//한 번에 몇 라인을 읽을지
+
+	/* topK */
+	const int topK = 10;	//상위 몇 개 아이템에 대해
+
 }
 
 namespace boost {
-	const regex paper_reg("(conf|journals).*");
+	const boost::regex paper_reg("(conf|journals).*");
 }

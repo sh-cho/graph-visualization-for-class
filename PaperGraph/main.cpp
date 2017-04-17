@@ -2,8 +2,6 @@
 #include "PaperGraphWidget.h"
 #include "MainWindow.h"
 
-//const char* PAPER_FILENAME = "dblp-paper.txt";
-
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);

@@ -39,7 +39,7 @@ void MainWindow::createActions()
 	testHighlightAct->setStatusTip(tr("Highlighting node"));
 	connect(testHighlightAct, &QAction::triggered, this, &MainWindow::test_highlighting);
 
-	resetColorAct = new QAction(tr("&Reset"), this);
+	resetColorAct = new QAction(tr("&Reset colors"), this);
 	resetColorAct->setStatusTip(tr("Reset all node's color"));
 	connect(resetColorAct, &QAction::triggered, this, &MainWindow::reset_color);
 }

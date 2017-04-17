@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "GraphItem.h"
 
-GraphItem::GraphItem(ifstream& fin)
+GraphItem::GraphItem(ifstream& fin, int numOfLines)
 {
+	//numOfLines == ifstream에서 읽을 라인의 수
+
 	if (!fin)
 		throw std::exception("graph file input is invalid");
+	else if (numOfLines < 1)
+		throw std::exception("invalid numOfLines");
 
 	/**
 	 *	Parse Paper dataset
@@ -24,6 +28,7 @@ GraphItem::GraphItem(ifstream& fin)
 	vector<simple_edge> edges_indexes;	//int로 변환된 edge
 	
 	int node_cnt = 0;
+	int line_cnt = 0;
 	qDebug() << "* graph reading start";
 	
 	//한 줄씩 읽어서 Parse
@@ -48,9 +53,11 @@ GraphItem::GraphItem(ifstream& fin)
 		}
 	
 		//debug
-		if (node_cnt > NODE_LIMIT) break;
+		++line_cnt;
+		if (line_cnt >= numOfLines) break;
 	}
 	qDebug() << "* graph reading complete";
+	qDebug() << "* # of read line: " << line_cnt;
 	qDebug() << "* # of nodes: " << node_cnt;
 	qDebug() << "* # of edges: " << edges.size();
 	
@@ -85,10 +92,10 @@ GraphItem::GraphItem(ifstream& fin)
 		//node type 설정
 		if (boost::regex_match(node_label, paper_reg)) {
 			//Paper
-			boost::put(vertex_type, *graph, *vi, NODE_PAPER);
+			boost::put(vertex_type, *graph, *vi, NODE_TYPE::NODE_PAPER);
 		} else {
 			//Author
-			boost::put(vertex_type, *graph, *vi, NODE_AUTHOR);
+			boost::put(vertex_type, *graph, *vi, NODE_TYPE::NODE_AUTHOR);
 		}
 
 		++i;
@@ -173,6 +180,7 @@ GraphItem::GraphItem(ifstream& fin)
 	typedef typename Topology::point_type Point;
 	auto position = get(vertex_position, *graph);
 	auto label = get(vertex_name, *graph);
+	auto nodeType = get(vertex_type, *graph);
 
 	typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
 	typename graph_traits<Graph>::edge_iterator ei, ei_end;
@@ -186,15 +194,6 @@ GraphItem::GraphItem(ifstream& fin)
 		//make edge item and push it to list
 		EdgeItem *edge;
 		
-		//if (label[u] == "conf/sbrn/GomesPSRC10" ||
-		//	label[u] == "conf/iastedCSN/KeimS06" ||
-		//	label[v] == "conf/sbrn/GomesPSRC10" ||
-		//	label[v] == "conf/iastedCSN/KeimS06") {
-		//	//highlight
-		//	edge = new EdgeItem(p1[0], p1[1], p2[0], p2[1], QColor(Qt::blue), 3);
-		//} else {
-		//	edge = new EdgeItem(p1[0], p1[1], p2[0], p2[1], QColor(Qt::black), 0);
-		//}
 		edge = new EdgeItem(p1[0], p1[1], p2[0], p2[1], QColor(Qt::black), 0);
 		edge->setPos(p1[0], p1[1]);
 		edgeList << edge;
@@ -203,18 +202,16 @@ GraphItem::GraphItem(ifstream& fin)
 	//add nodes
 	for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
 		Point p = position[*vi];
+		auto nt = nodeType[*vi];
 		std::string name = label[*vi];
 
 		//make node item and push it to list
 		NodeItem *node;
-		//if (name == "conf/sbrn/GomesPSRC10" ||
-		//	name == "conf/iastedCSN/KeimS06") {
-		//	//highlight
-		//	node = new NodeItem(p[0], p[1], QColor(Qt::blue), QString(name.c_str()));
-		//} else {
-		//	node = new NodeItem(p[0], p[1], QColor(Qt::green), QString(name.c_str()));
-		//}
-		node = new NodeItem(p[0], p[1], QColor(Qt::green), QString(name.c_str()));
+		if (nt == NODE_TYPE::NODE_PAPER) {
+			node = new NodeItem(p[0], p[1], QColor(Qt::darkGreen), QString(name.c_str()), nt);
+		} else {
+			node = new NodeItem(p[0], p[1], QColor(Qt::green), QString(name.c_str()), nt);
+		}
 		node->setPos(QPointF(p[0], p[1]));
 		nodeList << node;
 	}
@@ -263,7 +260,11 @@ void GraphItem::path_highlighting(std::string start, std::string end)
 void GraphItem::reset_color()
 {
 	for (auto& n: nodeList) {
-		n->setColor(QColor(Qt::green));
+		if (n->getType() == NODE_PAPER) {
+			n->setColor(QColor(Qt::darkGreen));
+		} else {
+			n->setColor(QColor(Qt::green));
+		}
 	}
 }
 

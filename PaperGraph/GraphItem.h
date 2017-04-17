@@ -9,21 +9,6 @@ using namespace std;
 using namespace boost;
 
 
-//enum GRAPH_LAYOUT {
-//	RANDOM_LAYOUT,
-//	CIRCLE_LAYOUT,
-//	//KAMADA_KAWAI_LAYOUT,
-//	FRUCHTERMAN_REINGOLD_LAYOUT	//slow
-//};
-
-/**
- *	Constants
- */
-//const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
-//const int SCREEN_SIZE = 300;
-//const int NODE_LIMIT = 100;
-//const boost::regex paper_reg("(conf|journals).*");
-
 enum vertex_position_t { vertex_position };
 enum vertex_type_t { vertex_type };
 namespace boost {
@@ -55,7 +40,7 @@ class GraphItem
 	: public QGraphicsItem
 {
 public:
-	GraphItem(ifstream& fin);
+	GraphItem(ifstream& fin, int numOfLines);
 
 	//overrides
 	QRectF boundingRect() const override;

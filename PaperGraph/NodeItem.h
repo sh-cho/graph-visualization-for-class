@@ -3,8 +3,6 @@
 
 #include "stdafx.h"
 
-const int NODE_SIZE = 4;
-
 class NodeItem
 	: public QGraphicsItem
 {
@@ -13,6 +11,7 @@ private:
 	double y;
 	QColor color;
 	QString label;
+	int type;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -20,10 +19,11 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-	NodeItem(double x, double y, QColor color, QString label);
+	NodeItem(double x, double y, QColor color, QString label, int type);
 
 	//getter setter
 	QString getLabel() {return label;}
+	int getType() { return type; }
 	void setColor(QColor color) {this->color=color;}
 
 	QRectF boundingRect() const override;
