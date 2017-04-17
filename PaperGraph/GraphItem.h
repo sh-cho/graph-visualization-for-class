@@ -9,33 +9,6 @@ using namespace std;
 using namespace boost;
 
 
-enum vertex_position_t { vertex_position };
-enum vertex_type_t { vertex_type };
-namespace boost {
-	BOOST_INSTALL_PROPERTY(vertex, position);
-	BOOST_INSTALL_PROPERTY(vertex, type);
-}
-typedef square_topology<>::point_type point;
-struct simple_edge {
-	int first, second;
-};
-
-typedef boost::property<vertex_index_t, int,
-	boost::property<vertex_name_t, std::string,
-	boost::property<vertex_position_t, point, 
-	boost::property<vertex_type_t, int>>>
-> VertexProperties;
-typedef adjacency_list<
-	listS,	//outEdgeList
-	listS,	//VertexList
-	undirectedS,
-	//vertex properties
-	VertexProperties,
-	//edge properties
-	boost::property<edge_weight_t, double>
-> Graph;
-
-
 class GraphItem
 	: public QGraphicsItem
 {
@@ -57,6 +30,8 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+	bm_type node_ids;
+	vector<simple_edge> edges_indexes;
 	Graph *graph = nullptr;
 	QList<NodeItem *> nodeList;
 	QList<EdgeItem *> edgeList;

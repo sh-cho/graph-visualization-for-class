@@ -23,9 +23,9 @@ GraphItem::GraphItem(ifstream& fin, int numOfLines)
 	
 	//String <--> int 양방향 변환을 위해 bidirectional map 상숑
 	//map<string, int> -> <vertex label, vertex index>
-	typedef boost::bimap<string, int> bm_type;
-	bm_type node_ids;
-	vector<simple_edge> edges_indexes;	//int로 변환된 edge
+	/*typedef boost::bimap<string, int> bm_type;*/
+	/*bm_type node_ids;
+	vector<simple_edge> edges_indexes*/;	//int로 변환된 edge
 	
 	int node_cnt = 0;
 	int line_cnt = 0;
@@ -76,8 +76,6 @@ GraphItem::GraphItem(ifstream& fin, int numOfLines)
 	
 	//set index property
 	qDebug() << "* set vertex property start";
-	typedef typename graph_traits<Graph>::edge_iterator edge_iterator;
-	typedef typename graph_traits<Graph>::vertex_iterator vertex_iterator;
 	vertex_iterator vi, vi_end;
 	int i = 0;
 	for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
@@ -143,7 +141,6 @@ GraphItem::GraphItem(ifstream& fin, int numOfLines)
 	//예제 코드: http://www.boost.org/doc/libs/1_63_0/libs/graph/test/layout_test.cpp
 	//(-> 콘솔 기반)
 	qDebug() << "* make graph layout start";
-	typedef square_topology<> Topology;
 	minstd_rand gen;
 	Topology topology(gen, (double)SCREEN_SIZE);
 	Topology::point_type origin;
@@ -176,14 +173,11 @@ GraphItem::GraphItem(ifstream& fin, int numOfLines)
 
 
 	//add edges
-	typedef square_topology<> Topology;
-	typedef typename Topology::point_type Point;
 	auto position = get(vertex_position, *graph);
 	auto label = get(vertex_name, *graph);
 	auto nodeType = get(vertex_type, *graph);
 
-	typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
-	typename graph_traits<Graph>::edge_iterator ei, ei_end;
+	edge_iterator ei, ei_end;
 	vertex_descriptor u, v;
 	for (boost::tie(ei, ei_end)=boost::edges(*graph); ei!=ei_end; ++ei) {
 		u = source(*ei, *graph);
