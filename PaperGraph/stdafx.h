@@ -28,13 +28,20 @@
 #include <boost/graph/topology.hpp>
 #include <boost/regex.hpp>
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include <algorithm>
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <map>
+#include <queue>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace boost;
@@ -43,9 +50,11 @@ using namespace std;
 /* enums */
 enum vertex_position_t { vertex_position };
 enum vertex_type_t { vertex_type };
+enum vertex_record_t { vertex_record };
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
 	BOOST_INSTALL_PROPERTY(vertex, type);
+	BOOST_INSTALL_PROPERTY(vertex, record);
 }
 enum NODE_TYPE {
 	NODE_PAPER,
@@ -64,7 +73,8 @@ typedef square_topology<>::point_type point;
 typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_name_t, std::string,
 	boost::property<vertex_position_t, point,
-	boost::property<vertex_type_t, int>>>
+	boost::property<vertex_type_t, int,
+	boost::property<vertex_record_t, int>>>>
 	> VertexProperties;
 typedef boost::adjacency_list<
 	listS,	//outEdgeList
@@ -77,6 +87,7 @@ typedef boost::adjacency_list<
 > Graph;
 typedef typename graph_traits<Graph>::edge_iterator edge_iterator;
 typedef typename graph_traits<Graph>::vertex_iterator vertex_iterator;
+//typedef boost::graph_traits<Graph>::adjacency_iterator adjacency_iterator;
 typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
 typedef square_topology<> Topology;
 typedef typename Topology::point_type Point;
@@ -95,14 +106,98 @@ namespace {
 	const int NODE_SIZE = 4;
 	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
 	const int SCREEN_SIZE = 1000;
-	const int READ_LINE_UNIT = 100;	//한 번에 몇 라인을 읽을지
+	const int READ_LINE_UNIT = 5;	//한 번에 몇 라인을 읽을지
 
 	/* topK */
-	const int TOP_K = 10;	//상위 몇 개 아이템에 대해 할 지
+	const int TOP_K = 10;	//상위 몇 개 아이템에 대해 highlight 할 지
 
 }
 
-
+/* boost */
 namespace boost {
 	const boost::regex paper_reg("(conf|journals).*");
 }
+
+/* topK heap */
+template <typename T>
+class TopKHeap {
+private:
+	int k;		//max size
+	int size;	//current size
+	T *heap;
+
+private:
+	void reHeapDown(int root) {
+		//after pop
+		int minIdx, left, right;
+
+		left = root * 2 + 1;
+		right = root * 2 + 2;
+
+		if (left <= (size - 1)) {
+			if (left == (size - 1))
+				minIdx = left;
+			else {
+				minIdx = ((heap[left] <= heap[right]) ? left : right);
+			}
+
+			if (heap[root] > heap[minIdx]) {
+				swap(heap[root], heap[minIdx]);
+				reHeapDown(minIdx);
+			}
+		}
+	}
+	void reHeapUp(int root, int bottom) {
+		//bottom: 위로 올릴 노드 idx
+		//after push
+		if (root > bottom) {
+			int parent = (bottom - 1) / 2;
+			if (heap[parent] < heap[bottom]) {
+				swap(heap[parent], heap[bottom]);
+				reHeapUp(root, parent);
+			}
+		}
+	}
+
+public:
+	TopKHeap(int _k) : k(_k), size(0) {
+		if (_k <= 0) abort();
+		heap = new T[_k];
+		memset(heap, 0, sizeof(heap));
+	}
+	~TopKHeap() {
+		if (heap)	delete[] heap;
+	}
+
+public:
+	void push(T elem) {
+		if (size < k) {
+			heap[size++] = elem;
+		}
+		else {
+			if (elem < heap[0]) {
+				//less than minimum
+			}
+			else {
+				pop();
+				heap[size++] = elem;
+			}
+		}
+
+		reHeapUp(0, size - 1);
+	}
+	T pop() {
+		if (size <= 0)
+			abort();
+		else if (size == 1) {
+			T ret = heap[--size];
+			return ret;
+		}
+		else {
+			T ret = heap[0];
+			heap[0] = heap[--size];
+			reHeapDown(0);
+			return ret;
+		}
+	}
+};

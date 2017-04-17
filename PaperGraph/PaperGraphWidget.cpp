@@ -25,20 +25,44 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	setWindowTitle(tr("dblp paper graph visualization"));
 }
 
-void PaperGraphWidget::print_graph(ifstream& fin)
+//void PaperGraphWidget::print_graph(ifstream* pFin)
+//{
+//	qDebug("* PaperGraphWidget::print_graph");
+//	//QGraphicsItem *graph_item = new GraphItem(fin);
+//	if (graphItem)
+//		throw std::exception("already have graph item");
+//
+//	graphItem = new GraphItem(pFin);
+//	graphItem->setPos(0, 0);
+//	scene->addItem(graphItem);
+//}
+
+void PaperGraphWidget::print_graph(const char * filename)
 {
-	//QGraphicsItem *graph_item = new GraphItem(fin);
 	if (graphItem)
 		throw std::exception("already have graph item");
 
-	graphItem = new GraphItem(fin, READ_LINE_UNIT);
+	graphItem = new GraphItem(filename);
 	graphItem->setPos(0, 0);
 	scene->addItem(graphItem);
+}
+
+void PaperGraphWidget::read_more()
+{
+	qDebug("* PaperGraphWidget::read_more");
+	graphItem->read_more();
+	scene->update();
 }
 
 void PaperGraphWidget::path_highlight()
 {
 	graphItem->path_highlighting(std::string(""), std::string(""));
+	scene->update();
+}
+
+void PaperGraphWidget::topk()
+{
+	graphItem->topK_highlight();
 	scene->update();
 }
 
