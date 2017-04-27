@@ -9,9 +9,7 @@ int main(int argc, char *argv[])
 	MainWindow m;
 
 	try {
-		//ifstream fin(PAPER_FILENAME);
-		m.print_graph(PAPER_FILENAME);
-		//fin.close();
+		m.make_graph(PAPER_FILENAME);
 	} catch (const std::exception& e) {
 		qDebug() << "Error: " << e.what();
 		return EXIT_FAILURE;

@@ -25,15 +25,10 @@ MainWindow::~MainWindow()
 
 }
 
-void MainWindow::print_graph(const char * filename)
+void MainWindow::make_graph(const char* filename)
 {
-	graphWidget->print_graph(filename);
+	graphWidget->make_graph(filename);
 }
-
-//void MainWindow::print_graph(std::ifstream *pFin)
-//{
-//	graphWidget->print_graph(pFin);
-//}
 
 //////////////////////////////////////////////////////////////////
 // private methods

@@ -12,8 +12,7 @@ public:
 	MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-	//void print_graph(std::ifstream *pFin);
-	void print_graph(const char* filename);
+	void make_graph(const char* filename);
 
 
 private:

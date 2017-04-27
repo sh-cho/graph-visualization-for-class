@@ -11,8 +11,7 @@ class PaperGraphWidget : public QWidget
 
 public:
 	PaperGraphWidget(QWidget *parent = 0);
-	//void print_graph(ifstream* pFin);
-	void print_graph(const char* filename);
+	void make_graph(const char* filename);
 
 //main window slots
 	void read_more();
