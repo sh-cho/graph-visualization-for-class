@@ -27,9 +27,9 @@ void GraphItem::read_more()
 	std::string line;
 	vector<std::string> tokens;
 	vector<std::string> authors;
-	/*vector<pair<string, string>> edges;*/
 
-	//vector<simple_edge> edges_indexes;
+	vector<pair<string, string>> edges;
+	vector<pair<int, int>> edges_indexes;
 
 	int line_cnt = 0;
 	qDebug() << "* graph reading start";
@@ -67,12 +67,9 @@ void GraphItem::read_more()
 	qDebug() << "* # of nodes: " << node_cnt;
 	//qDebug() << "* # of edges: " << edges.size();
 
-	
-
 	//edge conversion
 	//<string, string> to <int, int>
 	//using boost::bimap (bidirectional map)
-	edges_indexes.clear();
 	for (auto edge : edges) {
 		edges_indexes.push_back({
 			node_ids.left.find(edge.first)->get_right(),
@@ -80,18 +77,16 @@ void GraphItem::read_more()
 		});
 	}
 
-	//Graph graph(edges_indexes.begin(), edges_indexes.end(), node_ids.size());
-	//graph = new Graph(edges_indexes.begin(), edges_indexes.end(), node_ids.size());
-	//for (auto& e: edges_indexes) {
-	//	boost::add_edge(e.first, e.second, graph);
-	//}
 
-	if (graph) {
-		delete graph;
-		graph = nullptr;
+	// add new vertices
+	for (int i = 0; i < node_cnt; ++i) {
+		vdes.push_back(add_vertex(static_cast<Graph&>(*graph)));
 	}
-	graph = new Graph(edges_indexes.begin(), edges_indexes.end(), node_ids.size());
 
+	// add new edges
+	for (auto e_i: edges_indexes) {
+		add_edge(vdes[e_i.first], vdes[e_i.second], *graph);
+	}
 	
 
 	//set index property
@@ -124,15 +119,15 @@ void GraphItem::read_more()
 	qDebug() << "* set vertex property end";
 	whole_node_cnt += node_cnt;
 
-	//qDebug("* set edges weight start");
-	////모든 edge의 weight를 1로 설정
-	//typename graph_traits<Graph>::edge_iterator ei, ei_end;
-	//for (boost::tie(ei, ei_end)=boost::edges(*graph); ei!=ei_end; ++ei) {
-	//	boost::put(edge_weight, *graph, *ei, 1);
-	//}
-	//qDebug("* set edges weight end");
-	//
-	//
+	qDebug("* set edges weight start");
+	//모든 edge의 weight를 1로 설정
+	typename graph_traits<Graph>::edge_iterator ei, ei_end;
+	for (boost::tie(ei, ei_end)=boost::edges(*graph); ei!=ei_end; ++ei) {
+		boost::put(edge_weight, *graph, *ei, 1);
+	}
+	qDebug("* set edges weight end");
+	
+	
 	//qDebug("* path highlighting start");
 	////find start, end node's id
 	//int start_idx, end_idx;
@@ -204,7 +199,7 @@ void GraphItem::read_more()
 	auto label = boost::get(vertex_name, *graph);
 	auto nodeType = boost::get(vertex_type, *graph);
 
-	edge_iterator ei, ei_end;
+	//edge_iterator ei, ei_end;
 	vertex_descriptor u, v;
 	for (boost::tie(ei, ei_end) = boost::edges(*graph); ei != ei_end; ++ei) {
 		u = source(*ei, *graph);

@@ -38,8 +38,9 @@ protected:
 private:
 	ifstream fin;
 	bm_type node_ids;
-	vector<pair<string, string>> edges;
-	vector<simple_edge> edges_indexes;
+	//vector<pair<string, string>> edges;
+	//vector<pair<int, int>> edges_indexes;
+	vector<vertex_descriptor> vdes;
 	int whole_node_cnt = 0;
 
 	Graph *graph = nullptr;

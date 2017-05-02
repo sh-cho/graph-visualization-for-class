@@ -93,9 +93,12 @@ typedef square_topology<> Topology;
 typedef typename Topology::point_type Point;
 
 /* structs */
-struct simple_edge {
-	int first, second;
-};
+//struct simple_edge {
+//	int first, second;
+//};
+//struct simple_edge {
+//	int a, b;
+//};
 
 /* constants */
 namespace {
