@@ -11,7 +11,7 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	View *view = new View("temp view");
 	view->view()->setScene(scene);
 
-	QVBoxLayout *layout = new QVBoxLayout;
+	//QVBoxLayout *layout = new QVBoxLayout;
 	//QComboBox *combo = new QComboBox;
 	//combo->addItem("conf/iastedCSN/KeimS06");
 	//combo->addItem("conf/iastedCSN/Mojumdar06");
@@ -19,7 +19,15 @@ PaperGraphWidget::PaperGraphWidget(QWidget *parent)
 	//connect(combo, SIGNAL(currentIndexChanged(int)),
 	//	this, SLOT(handleSelectionChanged(int)));
 	//layout->addWidget(combo);
-	layout->addWidget(view);
+	QGridLayout *layout = new QGridLayout;
+
+	//test
+	QLabel *testLabel = new QLabel(tr("&Test label"));
+	testCombo = new QComboBox;
+	testLabel->setBuddy(testCombo);
+	layout->addWidget(testLabel, 0, 0);
+	layout->addWidget(testCombo, 0, 1);
+	layout->addWidget(view, 1, 0, 1, 2);
 	setLayout(layout);
 
 	setWindowTitle(tr("dblp paper graph visualization"));
@@ -63,6 +71,9 @@ void PaperGraphWidget::reset_color()
 void PaperGraphWidget::test()
 {
 	//test
+	testCombo->addItem(to_string(rand() % 300).c_str());
+	testCombo->addItem(to_string(rand() % 300).c_str());
+	testCombo->addItem(to_string(rand() % 300).c_str());
 }
 
 void PaperGraphWidget::handleSelectionChanged(int idx)

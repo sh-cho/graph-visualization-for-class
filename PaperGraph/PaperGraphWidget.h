@@ -30,6 +30,8 @@ private:
 
 	QGraphicsScene *scene;
 	GraphItem *graphItem = nullptr;
+
+	QComboBox *testCombo;
 };
 
 #endif // PAPERGRAPHWIDGET_H
