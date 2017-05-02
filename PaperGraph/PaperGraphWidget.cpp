@@ -60,6 +60,11 @@ void PaperGraphWidget::reset_color()
 	scene->update();
 }
 
+void PaperGraphWidget::test()
+{
+	//test
+}
+
 void PaperGraphWidget::handleSelectionChanged(int idx)
 {
 	QMessageBox::information(this, "QCombobox", 

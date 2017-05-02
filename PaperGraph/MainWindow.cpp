@@ -48,6 +48,10 @@ void MainWindow::createActions()
 	resetColorAct = new QAction(tr("Reset colors"), this);
 	resetColorAct->setStatusTip(tr("Reset all node's color"));
 	connect(resetColorAct, &QAction::triggered, this, &MainWindow::reset_color);
+
+	testAct = new QAction(tr("test action"), this);
+	testAct->setStatusTip(tr("test test"));
+	connect(testAct, &QAction::triggered, this, &MainWindow::test);
 }
 
 void MainWindow::createMenus()
@@ -59,6 +63,9 @@ void MainWindow::createMenus()
 	actionMenu->addAction(mightKnowAct);
 	actionMenu->addAction(topkAct);
 	actionMenu->addAction(resetColorAct);
+
+	testMenu = menuBar()->addMenu(tr("&Test"));
+	testMenu->addAction(testAct);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -83,4 +90,9 @@ void MainWindow::topk()
 void MainWindow::reset_color()
 {
 	graphWidget->reset_color();
+}
+
+void MainWindow::test()
+{
+	graphWidget->test();
 }

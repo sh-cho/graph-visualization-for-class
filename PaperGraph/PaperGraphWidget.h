@@ -19,6 +19,9 @@ public:
 	void topk();
 	void reset_color();
 
+	//test
+	void test();
+
 private slots:
 	void handleSelectionChanged(int idx);
 

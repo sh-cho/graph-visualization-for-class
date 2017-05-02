@@ -24,6 +24,10 @@ private:
 	QAction *mightKnowAct;
 	QAction *topkAct;
 	QAction *resetColorAct;
+	
+	//test
+	QMenu *testMenu;
+	QAction *testAct;
 
 private:
 	void createActions();
@@ -34,6 +38,8 @@ private slots:
 	void might_know();
 	void topk();
 	void reset_color();
+	//test
+	void test();
 };
 
 #endif // MAINWINDOW_H
