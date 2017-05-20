@@ -30,6 +30,9 @@ public:
 	void reset_color();
 	void topK_highlight();
 
+	//test
+	void test();
+
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;

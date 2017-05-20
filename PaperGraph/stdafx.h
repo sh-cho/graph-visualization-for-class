@@ -92,14 +92,6 @@ typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
 typedef square_topology<> Topology;
 typedef typename Topology::point_type Point;
 
-/* structs */
-//struct simple_edge {
-//	int first, second;
-//};
-//struct simple_edge {
-//	int a, b;
-//};
-
 /* constants */
 namespace {
 	/* file io */

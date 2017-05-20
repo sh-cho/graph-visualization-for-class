@@ -74,6 +74,8 @@ void PaperGraphWidget::test()
 	testCombo->addItem(to_string(rand() % 300).c_str());
 	testCombo->addItem(to_string(rand() % 300).c_str());
 	testCombo->addItem(to_string(rand() % 300).c_str());
+
+	graphItem->test();
 }
 
 void PaperGraphWidget::handleSelectionChanged(int idx)

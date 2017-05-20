@@ -123,36 +123,10 @@ void GraphItem::read_more()
 	//모든 edge의 weight를 1로 설정
 	typename graph_traits<Graph>::edge_iterator ei, ei_end;
 	for (boost::tie(ei, ei_end)=boost::edges(*graph); ei!=ei_end; ++ei) {
-		boost::put(edge_weight, *graph, *ei, 1);
+		boost::put(edge_weight, *graph, *ei, 1.0);
 	}
 	qDebug("* set edges weight end");
 	
-	
-	//qDebug("* path highlighting start");
-	////find start, end node's id
-	//int start_idx, end_idx;
-	//for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
-	//	string node_name = boost::get(vertex_name, *graph, *vi);
-	//	if (node_name == "Seong Chul Cho") {
-	//		start_idx = boost::get(vertex_index, *graph, *vi);
-	//	} else if (node_name == "Hyung Jin Kim") {
-	//		end_idx = boost::get(vertex_index, *graph, *vi);
-	//	}
-	//}
-
-	//typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
-	//vector<vertex_descriptor> parents(num_vertices(*graph));
-	//vector<int> distances(num_vertices(*graph));
-	//vertex_descriptor start_vertex = vertex(start_idx, *graph);
-	//dijkstra_shortest_paths(*graph, start_vertex,
-	//	predecessor_map(&parents[0]).distance_map(&distances[0]));
-	////path finding
-	//vertex_descriptor current = boost::vertex(end_idx, *graph);
-	//while (current != boost::vertex(start_idx, *graph)) {
-	//}
-	//qDebug("* path highlighting end");
-
-
 	//graph layout calculation
 	//using boost::random_graph_layout and boost::kamada_kawai_spring_layout
 	//vertex마다 계산된 좌표를 property에 적용
@@ -393,6 +367,37 @@ void GraphItem::topK_highlight()
 			}
 		}
 	}
+}
+
+void GraphItem::test()
+{
+	qDebug("* path highlighting start");
+	vertex_iterator vi, vi_end;
+	//find start, end node's id
+	int start_idx, end_idx;
+	for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
+		string node_name = boost::get(vertex_name, *graph, *vi);
+		if (node_name == "Seong Chul Cho") {
+			start_idx = boost::get(vertex_index, *graph, *vi);
+		} else if (node_name == "Hyung Jin Kim") {
+			end_idx = boost::get(vertex_index, *graph, *vi);
+		}
+	}
+
+	vector<vertex_descriptor> parents(num_vertices(*graph));
+	vector<double> distances(num_vertices(*graph));
+	vertex_descriptor start_vertex = boost::vertex(start_idx, *graph);
+	boost::dijkstra_shortest_paths(*graph, start_vertex,
+		predecessor_map(boost::make_iterator_property_map(parents.begin(), boost::get(boost::vertex_index, *graph))).
+		distance_map(boost::make_iterator_property_map(distances.begin(), get(boost::vertex_index, *graph))));
+	//path finding
+	qDebug("* path finding start");
+	vertex_descriptor current = boost::vertex(end_idx, *graph);
+	while (current != boost::vertex(start_idx, *graph)) {
+
+	}
+	qDebug("* path finding end");
+	qDebug("* path highlighting end");
 }
 
 //event handler
