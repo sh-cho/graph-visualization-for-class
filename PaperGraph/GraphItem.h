@@ -28,7 +28,7 @@ public:
 	//methods
 	void might_know();
 	void reset_color();
-	void topK_highlight();
+	void topK_highlight_with_total();
 
 	//test
 	void test();
@@ -41,8 +41,6 @@ protected:
 private:
 	ifstream fin;
 	bm_type node_ids;
-	//vector<pair<string, string>> edges;
-	//vector<pair<int, int>> edges_indexes;
 	vector<vertex_descriptor> vdes;
 	int whole_node_cnt = 0;
 

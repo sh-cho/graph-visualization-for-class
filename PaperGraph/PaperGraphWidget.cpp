@@ -58,7 +58,7 @@ void PaperGraphWidget::might_know()
 
 void PaperGraphWidget::topk()
 {
-	graphItem->topK_highlight();
+	graphItem->topK_highlight_with_total();
 	scene->update();
 }
 

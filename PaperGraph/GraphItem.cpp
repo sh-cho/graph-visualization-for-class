@@ -310,8 +310,10 @@ void GraphItem::reset_color()
 	}
 }
 
-void GraphItem::topK_highlight()
+void GraphItem::topK_highlight_with_total()
 {
+	// 전체 그래프 기준 topK highlight
+
 	// 저자 노드별 실적 계산
 	vertex_iterator vi, vi_end;
 	Graph::adjacency_iterator ai, ai_end;
@@ -374,29 +376,67 @@ void GraphItem::test()
 	qDebug("* path highlighting start");
 	vertex_iterator vi, vi_end;
 	//find start, end node's id
-	int start_idx, end_idx;
+
+	auto vertex_idx = boost::get(vertex_index, *graph);
+	auto nodeLabel = boost::get(vertex_name, *graph);
+
+	int start_idx=-1, end_idx=-1;
 	for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
-		string node_name = boost::get(vertex_name, *graph, *vi);
-		if (node_name == "Seong Chul Cho") {
-			start_idx = boost::get(vertex_index, *graph, *vi);
-		} else if (node_name == "Hyung Jin Kim") {
-			end_idx = boost::get(vertex_index, *graph, *vi);
+		//string node_name = boost::get(vertex_name, *graph, *vi);
+		const string& node_name = nodeLabel[*vi];
+		if (node_name == "Jung Gon Kim") {
+			start_idx = vertex_idx[*vi];
+		} else if (node_name == "Yong-Jin Kim") {
+			end_idx = vertex_idx[*vi];
 		}
+	}
+
+	
+	if (start_idx==-1 || end_idx==-1) {
+		qDebug() << start_idx << " " << end_idx;
+		qDebug("no target node");
+		return;
+	}
+	else if (start_idx == end_idx) {
+		qDebug("start and end node are same!");
+		return;
 	}
 
 	vector<vertex_descriptor> parents(num_vertices(*graph));
 	vector<double> distances(num_vertices(*graph));
 	vertex_descriptor start_vertex = boost::vertex(start_idx, *graph);
+
+	//shortest path using dijkstra
 	boost::dijkstra_shortest_paths(*graph, start_vertex,
 		predecessor_map(boost::make_iterator_property_map(parents.begin(), boost::get(boost::vertex_index, *graph))).
 		distance_map(boost::make_iterator_property_map(distances.begin(), get(boost::vertex_index, *graph))));
+
+	//check distances
+	//qDebug() << "dist: " << distances[end_idx];
+	//qDebug();
+	//for (int i = 0; i < distances.size(); ++i) {
+	//	qDebug() << "dist[" << i << "]: " << distances[i];
+	//}
+	//qDebug();
+	if (distances[end_idx] >= whole_node_cnt) {
+		//no path (dist == 0)
+		qDebug() << "no path!";
+		return;
+	}
+
 	//path finding
 	qDebug("* path finding start");
 	vertex_descriptor current = boost::vertex(end_idx, *graph);
-	while (current != boost::vertex(start_idx, *graph)) {
-
+	qDebug() << "end: " << nodeLabel[current].c_str();
+	while (1) {
+		current = parents[vertex_idx[current]];
+		qDebug() << nodeLabel[current].c_str();
+		if (current == start_vertex) break;
 	}
 	qDebug("* path finding end");
+	
+
+	qDebug("* path highlighting start");
 	qDebug("* path highlighting end");
 }
 
