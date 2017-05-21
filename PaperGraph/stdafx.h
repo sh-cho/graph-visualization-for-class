@@ -7,6 +7,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGridLayout>
+#include <QInputDialog>
 #include <QKeyEvent>
 #include <QList>
 #include <QMainWindow>
@@ -100,8 +101,10 @@ namespace {
 	/* visualization */
 	const int NODE_SIZE = 4;
 	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
+	//const int SCREEN_SIZE = 3000;
 	const int SCREEN_SIZE = 500;
-	const int READ_LINE_UNIT = 20;	//한 번에 몇 라인을 읽을지
+	//const int READ_LINE_UNIT = 20;	//한 번에 몇 라인을 읽을지
+	const int READ_LINE_UNIT = 40;
 
 	/* topK */
 	const int TOP_K = 5;	//상위 몇 개 아이템에 대해 highlight 할 지

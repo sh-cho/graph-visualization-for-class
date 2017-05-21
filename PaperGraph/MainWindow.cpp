@@ -48,6 +48,9 @@ void MainWindow::createActions()
 	resetColorAct = new QAction(tr("Reset colors"), this);
 	resetColorAct->setStatusTip(tr("Reset all node's color"));
 	connect(resetColorAct, &QAction::triggered, this, &MainWindow::reset_color);
+	findShortestPathAct = new QAction(tr("Find Shortest Path"), this);
+	findShortestPathAct->setStatusTip("Find shortest path between two node");
+	connect(findShortestPathAct, &QAction::triggered, this, &MainWindow::find_shortest_path);
 
 	testAct = new QAction(tr("test action"), this);
 	testAct->setStatusTip(tr("test test"));
@@ -63,6 +66,7 @@ void MainWindow::createMenus()
 	actionMenu->addAction(mightKnowAct);
 	actionMenu->addAction(topkAct);
 	actionMenu->addAction(resetColorAct);
+	actionMenu->addAction(findShortestPathAct);
 
 	testMenu = menuBar()->addMenu(tr("&Test"));
 	testMenu->addAction(testAct);
@@ -84,12 +88,17 @@ void MainWindow::might_know()
 
 void MainWindow::topk()
 {
-	graphWidget->topk();
+	graphWidget->topk_with_total();
 }
 
 void MainWindow::reset_color()
 {
 	graphWidget->reset_color();
+}
+
+void MainWindow::find_shortest_path()
+{
+	graphWidget->find_shortest_path();
 }
 
 void MainWindow::test()

@@ -31,6 +31,11 @@ void GraphItem::read_more()
 	vector<pair<string, string>> edges;
 	vector<pair<int, int>> edges_indexes;
 
+	//property maps
+	auto node_position_map = boost::get(vertex_position, *graph);
+	auto node_label_map = boost::get(vertex_name, *graph);
+	auto node_type_map = boost::get(vertex_type, *graph);
+
 	int line_cnt = 0;
 	qDebug() << "* graph reading start";
 
@@ -145,16 +150,16 @@ void GraphItem::read_more()
 
 	switch (LAYOUT_MODE) {
 	case GRAPH_LAYOUT::RANDOM_LAYOUT:
-		random_graph_layout(*graph, get(vertex_position, *graph), rect_top);
+		random_graph_layout(*graph, node_position_map, rect_top);
 		break;
 
 	case GRAPH_LAYOUT::CIRCLE_LAYOUT:
-		circle_graph_layout(*graph, get(vertex_position, *graph), SCREEN_SIZE / 2);
+		circle_graph_layout(*graph, node_position_map, SCREEN_SIZE / 2);
 		break;
 
 	case GRAPH_LAYOUT::FRUCHTERMAN_REINGOLD_LAYOUT:
 		fruchterman_reingold_force_directed_layout(*graph,
-			get(vertex_position, *graph),
+			node_position_map,
 			topology,
 			attractive_force(square_distance_attractive_force())
 			.cooling(linear_cooling<double>(50))
@@ -168,32 +173,30 @@ void GraphItem::read_more()
 	nodeList.clear();
 	edgeList.clear();
 	
-	//add edges
-	auto position = boost::get(vertex_position, *graph);
-	auto label = boost::get(vertex_name, *graph);
-	auto nodeType = boost::get(vertex_type, *graph);
+	
 
 	//edge_iterator ei, ei_end;
 	vertex_descriptor u, v;
 	for (boost::tie(ei, ei_end) = boost::edges(*graph); ei != ei_end; ++ei) {
 		u = source(*ei, *graph);
 		v = target(*ei, *graph);
-		Point p1 = position[u];
-		Point p2 = position[v];
+		Point p1 = node_position_map[u];
+		Point p2 = node_position_map[v];
 
 		//make edge item and push it to list
 		EdgeItem *edge;
 
-		edge = new EdgeItem(p1[0], p1[1], p2[0], p2[1], QColor(Qt::black), 0);
+		edge = new EdgeItem(p1[0], p1[1], p2[0], p2[1], QColor(Qt::black), 0,
+			QString(node_label_map[u].c_str()), QString(node_label_map[v].c_str()));
 		edge->setPos(p1[0], p1[1]);
 		edgeList << edge;
 	}
 
 	//add nodes
 	for (boost::tie(vi, vi_end) = vertices(*graph); vi != vi_end; ++vi) {
-		Point p = position[*vi];
-		auto nt = nodeType[*vi];
-		std::string name = label[*vi];
+		Point p = node_position_map[*vi];
+		auto nt = node_type_map[*vi];
+		std::string name = node_label_map[*vi];
 
 		//make node item and push it to list
 		NodeItem *node;
@@ -244,8 +247,8 @@ void GraphItem::might_know()
 	Graph::adjacency_iterator ai, ai_end;
 	vector<string> might_know_vec;
 	
-	auto label = get(vertex_name, *graph);
-	auto nodeType = get(vertex_type, *graph);
+	auto node_label_map = get(vertex_name, *graph);
+	auto node_type_map = get(vertex_type, *graph);
 
 	// 회색 색칠
 	for (auto& n : nodeList) {
@@ -258,7 +261,7 @@ void GraphItem::might_know()
 
 	// find target node
 	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi!=vi_end; ++vi) {
-		if (label[*vi] == std::string(TARGET_AUTHOR_NAME)) {
+		if (node_label_map[*vi] == std::string(TARGET_AUTHOR_NAME)) {
 			vtarget = vi;
 			break;
 		}
@@ -286,7 +289,7 @@ void GraphItem::might_know()
 	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vtarget, *graph);
 		ai != ai_end;
 		++ai) {
-		might_know_vec.push_back(label[*ai]);
+		might_know_vec.push_back(node_label_map[*ai]);
 	}
 
 	// highlight
@@ -318,9 +321,9 @@ void GraphItem::topK_highlight_with_total()
 	vertex_iterator vi, vi_end;
 	Graph::adjacency_iterator ai, ai_end;
 
-	auto nodeLabel = boost::get(vertex_name, *graph);
-	auto nodeType = boost::get(vertex_type, *graph);
-	auto numOfRecords = boost::get(vertex_record, *graph);
+	auto node_label_map = boost::get(vertex_name, *graph);
+	auto node_type_map = boost::get(vertex_type, *graph);
+	auto node_records_map = boost::get(vertex_record, *graph);
 
 	//실적 count 초기화
 	//for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
@@ -333,20 +336,20 @@ void GraphItem::topK_highlight_with_total()
 	// <record, label>
 	TopKHeap<pair<int, string>> heap(TOP_K);
 	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
-		if (nodeType[*vi] != NODE_TYPE::NODE_AUTHOR) {
+		if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
 			continue;
 		}
 		
 		int record_cnt = 0;
 		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vi, *graph);
 			ai != ai_end; ++ai) {
-			if (nodeType[*ai] == NODE_TYPE::NODE_PAPER) {
+			if (node_type_map[*ai] == NODE_TYPE::NODE_PAPER) {
 				++record_cnt;
 			}
 		}
 
 		boost::put(vertex_record, *graph, *vi, record_cnt);
-		heap.push(make_pair(record_cnt, nodeLabel[*vi]));
+		heap.push(make_pair(record_cnt, node_label_map[*vi]));
 
 		//qDebug() << record_cnt;
 	}
@@ -371,28 +374,53 @@ void GraphItem::topK_highlight_with_total()
 	}
 }
 
-void GraphItem::test()
+void GraphItem::find_shortest_path()
 {
 	qDebug("* path highlighting start");
 	vertex_iterator vi, vi_end;
-	//find start, end node's id
 
-	auto vertex_idx = boost::get(vertex_index, *graph);
-	auto nodeLabel = boost::get(vertex_name, *graph);
+	auto node_idx_map = boost::get(vertex_index, *graph);
+	auto node_label_map = boost::get(vertex_name, *graph);
 
-	int start_idx=-1, end_idx=-1;
-	for (boost::tie(vi, vi_end)=vertices(*graph); vi!=vi_end; ++vi) {
-		//string node_name = boost::get(vertex_name, *graph, *vi);
-		const string& node_name = nodeLabel[*vi];
-		if (node_name == "Jung Gon Kim") {
-			start_idx = vertex_idx[*vi];
-		} else if (node_name == "Yong-Jin Kim") {
-			end_idx = vertex_idx[*vi];
+	string target_start,
+		target_end;
+
+	bool isok = false;
+
+	QInputDialog *inputDialog = new QInputDialog();
+
+	target_start = inputDialog->getText(nullptr, "Enter target's name", "Start node's name:",
+		QLineEdit::Normal, "Akira Idoue", &isok).toStdString();
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+	qDebug() << target_start.c_str();
+
+	target_end = inputDialog->getText(nullptr, "Enter target's name", "End node's name:",
+		QLineEdit::Normal, "Kayo Kurosaki", &isok).toStdString();
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+	qDebug() << target_end.c_str();
+
+
+
+
+	int start_idx = -1, end_idx = -1;
+	for (boost::tie(vi, vi_end) = vertices(*graph); vi != vi_end; ++vi) {
+		const string& node_name = node_label_map[*vi];
+		if (node_name == target_start) {
+			start_idx = node_idx_map[*vi];
+		}
+		else if (node_name == target_end) {
+			end_idx = node_idx_map[*vi];
 		}
 	}
 
-	
-	if (start_idx==-1 || end_idx==-1) {
+
+	if (start_idx == -1 || end_idx == -1) {
 		qDebug() << start_idx << " " << end_idx;
 		qDebug("no target node");
 		return;
@@ -402,14 +430,25 @@ void GraphItem::test()
 		return;
 	}
 
+	/*QMessageBox msgBox;
+	msgBox.setText("The document has been modified.");
+	msgBox.setInformativeText("Do you want to save your changes?");
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Save);
+	int ret = msgBox.exec();
+	qDebug() << "ret: " << ret;
+	if (ret == QMessageBox::Save) {
+	qDebug() << "save";
+	}*/
+
 	vector<vertex_descriptor> parents(num_vertices(*graph));
 	vector<double> distances(num_vertices(*graph));
 	vertex_descriptor start_vertex = boost::vertex(start_idx, *graph);
 
 	//shortest path using dijkstra
 	boost::dijkstra_shortest_paths(*graph, start_vertex,
-		predecessor_map(boost::make_iterator_property_map(parents.begin(), boost::get(boost::vertex_index, *graph))).
-		distance_map(boost::make_iterator_property_map(distances.begin(), get(boost::vertex_index, *graph))));
+		predecessor_map(boost::make_iterator_property_map(parents.begin(), node_idx_map)).
+		distance_map(boost::make_iterator_property_map(distances.begin(), node_idx_map)));
 
 	//check distances
 	//qDebug() << "dist: " << distances[end_idx];
@@ -426,18 +465,47 @@ void GraphItem::test()
 
 	//path finding
 	qDebug("* path finding start");
+	vector<string> paths;
 	vertex_descriptor current = boost::vertex(end_idx, *graph);
-	qDebug() << "end: " << nodeLabel[current].c_str();
+	paths.push_back(node_label_map[current]);
+	qDebug() << "end: " << node_label_map[current].c_str();
 	while (1) {
-		current = parents[vertex_idx[current]];
-		qDebug() << nodeLabel[current].c_str();
+		current = parents[node_idx_map[current]];
+		paths.push_back(node_label_map[current]);
+
+		qDebug() << node_label_map[current].c_str();
 		if (current == start_vertex) break;
 	}
 	qDebug("* path finding end");
-	
+
 
 	qDebug("* path highlighting start");
+	for (auto& n : nodeList) {
+		if (find(paths.begin(), paths.end(), n->getLabel().toStdString())
+			!= paths.end()) {
+			n->setColor(QColor(Qt::blue));
+		}
+	}
+	size_t paths_sz = paths.size();
+	for (int i = 0; i < paths_sz - 1; ++i) {
+		for (auto& e : edgeList) {
+			if ((e->getFrom().toStdString() == paths[i] && e->getTo().toStdString() == paths[i + 1])
+				|| (e->getFrom().toStdString() == paths[i + 1] && e->getTo().toStdString() == paths[i])) {
+				e->setColor(QColor(Qt::blue));
+				e->setWidth(3);
+			}
+		}
+	}
 	qDebug("* path highlighting end");
+}
+
+void GraphItem::test()
+{
+	qDebug("* test action start");
+
+
+
+	qDebug("* test action end");
 }
 
 //event handler

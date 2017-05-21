@@ -24,6 +24,7 @@ private:
 	QAction *mightKnowAct;
 	QAction *topkAct;
 	QAction *resetColorAct;
+	QAction *findShortestPathAct;
 	
 	//test
 	QMenu *testMenu;
@@ -38,6 +39,7 @@ private slots:
 	void might_know();
 	void topk();
 	void reset_color();
+	void find_shortest_path();
 	//test
 	void test();
 };

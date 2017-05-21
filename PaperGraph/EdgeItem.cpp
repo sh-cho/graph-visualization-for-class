@@ -13,7 +13,8 @@ void EdgeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
 }
 
-EdgeItem::EdgeItem(double x1, double y1, double x2, double y2, QColor color, int width)
+EdgeItem::EdgeItem(double x1, double y1, double x2, double y2, QColor color, int width,
+	QString from, QString to)
 {
 	this->x1 = x1;
 	this->y1 = y1;
@@ -22,6 +23,9 @@ EdgeItem::EdgeItem(double x1, double y1, double x2, double y2, QColor color, int
 
 	this->color = color;
 	this->width = width;
+
+	this->from = from;
+	this->to = to;
 	setZValue(0);	//노드 앞 가리지 않도록 ZValue 설정
 
 	/*setFlags(ItemIsSelectable | ItemIsMovable);

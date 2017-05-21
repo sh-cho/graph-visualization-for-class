@@ -56,9 +56,16 @@ void PaperGraphWidget::might_know()
 	scene->update();
 }
 
-void PaperGraphWidget::topk()
+void PaperGraphWidget::topk_with_total()
 {
+	//전체그래프에서 TopK highlight
 	graphItem->topK_highlight_with_total();
+	scene->update();
+}
+
+void PaperGraphWidget::find_shortest_path()
+{
+	graphItem->find_shortest_path();
 	scene->update();
 }
 
@@ -71,11 +78,12 @@ void PaperGraphWidget::reset_color()
 void PaperGraphWidget::test()
 {
 	//test
-	testCombo->addItem(to_string(rand() % 300).c_str());
-	testCombo->addItem(to_string(rand() % 300).c_str());
-	testCombo->addItem(to_string(rand() % 300).c_str());
+	//testCombo->addItem(to_string(rand() % 300).c_str());
+	//testCombo->addItem(to_string(rand() % 300).c_str());
+	//testCombo->addItem(to_string(rand() % 300).c_str());
 
 	graphItem->test();
+	scene->update();
 }
 
 void PaperGraphWidget::handleSelectionChanged(int idx)

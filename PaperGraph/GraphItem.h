@@ -29,6 +29,7 @@ public:
 	void might_know();
 	void reset_color();
 	void topK_highlight_with_total();
+	void find_shortest_path();
 
 	//test
 	void test();

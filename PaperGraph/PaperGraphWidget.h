@@ -16,7 +16,8 @@ public:
 //main window slots
 	void read_more();
 	void might_know();
-	void topk();
+	void topk_with_total();
+	void find_shortest_path();
 	void reset_color();
 
 	//test
