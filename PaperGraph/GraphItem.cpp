@@ -444,21 +444,6 @@ void GraphItem::might_know()
 	}
 }
 
-void GraphItem::reset_color()
-{
-	for (auto& n: nodeList) {
-		if (n->getType() == NODE_PAPER) {
-			n->setColor(QColor(Qt::darkGreen));
-		} else {
-			n->setColor(QColor(Qt::green));
-		}
-	}
-	for (auto& e: edgeList) {
-		e->setColor(Qt::black);
-		e->setWidth(0);
-	}
-}
-
 void GraphItem::topK_highlight_with_total()
 {
 	// 전체 그래프 기준 topK highlight
@@ -479,9 +464,22 @@ void GraphItem::topK_highlight_with_total()
 	//	boost::put(vertex_record, *graph, *vi, 0);
 	//}
 
-	// <record, label>
-	//저자별 논문 수 계산
-	TopKHeap<pair<int, string>> heap(TOP_K);
+	//k 입력
+	bool isok = false;
+
+	QInputDialog *inputDialog = new QInputDialog();
+	//int inputK = inputDialog->getText(nullptr, "Enter target's name", "Start node's name:",
+	//	QLineEdit::Normal, "Akira Idoue", &isok).toStdString();
+	int inputK = inputDialog->getInt(nullptr, "Enter K", "K:", 3,
+		1, whole_node_cnt, 1, &isok);
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+
+	//저자별 논문 수 계산 + TopK Heap 사용
+	//pair -> <num_of_record, label>
+	TopKHeap<pair<int, string>> heap(inputK);
 	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
 		if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
 			continue;
@@ -502,8 +500,9 @@ void GraphItem::topK_highlight_with_total()
 	}
 	
 	//get top K records
-	pair<int, string> topk_arr[TOP_K];
-	for (int i = 0; i < TOP_K; ++i) {
+	//pair<int, string> topk_arr[inputK];
+	pair<int, string> *topk_arr = new pair<int, string>[inputK];
+	for (int i = 0; i < inputK; ++i) {
 		topk_arr[i] = heap.pop();
 		qDebug() << "topk["<<i<<"] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
 	}
@@ -512,13 +511,227 @@ void GraphItem::topK_highlight_with_total()
 	for (auto& n: nodeList) {
 		auto label = n->getLabel();
 		n->setColor(QColor(Qt::lightGray));
-		for (auto& p: topk_arr) {
+		for (int i = 0; i < inputK; ++i) {
+			auto& p = topk_arr[i];
 			if (label.toStdString() == p.second) {
 				n->setColor(QColor(Qt::red));
 				break;
 			}
 		}
 	}
+	delete[] topk_arr;
+}
+
+void GraphItem::topK_highlight_with_target()
+{
+	// 선택한 사람 주변 topK highlight
+
+	// 저자 노드별 실적 계산
+	vertex_iterator vi, vi_end;
+	vertex_descriptor vtarget;
+	Graph::adjacency_iterator ai, ai_end,
+		ai2, ai2_end;
+
+	auto node_idx_map = boost::get(vertex_index, *graph);
+	auto node_label_map = boost::get(vertex_name, *graph);
+	auto node_type_map = boost::get(vertex_type, *graph);
+	auto node_records_map = boost::get(vertex_record, *graph);
+
+	vector<vertex_descriptor> paper_vec;
+	vector<string> visited;
+
+	vector<vertex_descriptor> target_desc_range_vec;
+
+	//k 입력
+	bool isok = false;
+
+	QInputDialog *inputDialog = new QInputDialog();
+	//int inputK = inputDialog->getText(nullptr, "Enter target's name", "Start node's name:",
+	//	QLineEdit::Normal, "Akira Idoue", &isok).toStdString();
+	int inputK = inputDialog->getInt(nullptr, "Enter K", "K:", 3,
+		1, whole_node_cnt, 1, &isok);
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+
+	//std::string target_name = inputDialog->getText
+	std::string target_name = inputDialog->getText(nullptr, "Enter target's name",
+		"target node's name:", QLineEdit::Normal, "Tobias Scholand", &isok).toStdString();
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+	qDebug() << target_name.c_str();
+
+
+	// find target node
+	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
+		if (node_label_map[*vi] == target_name) {
+			target_desc_range_vec.push_back(*vi);
+			vtarget = vertex(node_idx_map[*vi], *graph);
+			break;
+		}
+	}
+	visited.push_back(target_name);
+	
+	//push target's papers
+	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(vtarget, *graph);
+		ai != ai_end;
+		++ai) {
+		//ai: 타겟 노드의 이웃 노드(paper)
+		const string& node_label = node_label_map[*ai];
+		paper_vec.push_back(vertex(node_idx_map[*ai], *graph));
+		visited.push_back(node_label);
+	}
+
+	// find coauthor
+	for (auto paper : paper_vec) {
+		//paper: 타겟 저자의 논문
+		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(paper, *graph);
+			ai != ai_end;
+			++ai) {
+
+			//ai: paper의 이웃. = 저자들
+			//                  == coauthors
+			const string& node_label = node_label_map[*ai];
+			if (find(visited.begin(), visited.end(), node_label) != visited.end()) {
+				continue;
+			}
+
+			target_desc_range_vec.push_back(vertex(node_idx_map[*ai], *graph));
+			visited.push_back(node_label);
+		}
+	}
+
+
+	//저자별 논문 수 계산 + TopK Heap 사용
+	//target range에 대해 topK 구하기
+	//pair -> <num_of_record, label>
+	TopKHeap<pair<int, string>> heap(inputK);
+	for (auto& n: target_desc_range_vec) {
+		//if not author --> skip
+		if (node_type_map[n] != NODE_TYPE::NODE_AUTHOR) {
+			continue;
+		}
+
+		const string& node_label = node_label_map[n];
+		int record_cnt = 0;
+		//cnt
+		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(n, *graph);
+			ai != ai_end;
+			++ai) {
+			++record_cnt;
+		}
+
+		boost::put(vertex_record, *graph, n, record_cnt);
+		heap.push(make_pair(record_cnt, node_label));
+	}
+
+	//get top K records
+	int heap_sz = std::min(inputK, heap.getSize());
+	pair<int, string> *topk_arr = new pair<int, string>[heap_sz];
+	for (int i = 0; i < heap_sz; ++i) {
+		topk_arr[i] = heap.pop();
+		qDebug() << "topk[" << i << "] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
+	}
+
+
+	for (auto& n : nodeList) {
+		auto label = n->getLabel();
+		if (label.toStdString() != target_name) {
+			n->setColor(QColor(Qt::lightGray));
+		}
+		else {
+			n->setColor(QColor(Qt::blue));
+		}
+
+		//in target range
+		if (find(visited.begin(), visited.end(), label.toStdString()) != visited.end()) {
+			n->setColor(QColor(Qt::green));
+		}
+
+		//if topK
+		for (int i = 0; i < heap_sz; ++i) {
+			auto& p = topk_arr[i];
+			if (label.toStdString() == p.second) {
+				n->setColor(QColor(Qt::red));
+				break;
+			}
+		}
+	}
+
+	delete[] topk_arr;
+}
+
+void GraphItem::topK_using_custom_score()
+{
+	// 전체 그래프 기준 topK highlight
+
+	// 저자 노드별 실적 계산
+	vertex_iterator vi, vi_end;
+	Graph::adjacency_iterator ai, ai_end;
+
+	auto node_label_map = boost::get(vertex_name, *graph);
+	auto node_type_map = boost::get(vertex_type, *graph);
+	auto node_records_map = boost::get(vertex_record, *graph);
+
+	//k 입력
+	bool isok = false;
+
+	QInputDialog *inputDialog = new QInputDialog();
+	//int inputK = inputDialog->getText(nullptr, "Enter target's name", "Start node's name:",
+	//	QLineEdit::Normal, "Akira Idoue", &isok).toStdString();
+	int inputK = inputDialog->getInt(nullptr, "Enter K", "K:", 3,
+		1, whole_node_cnt, 1, &isok);
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+
+	//저자별 논문 수 계산 + TopK Heap 사용
+	//pair -> <num_of_record, label>
+	TopKHeap<pair<int, string>> heap(inputK);
+	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
+		if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
+			continue;
+		}
+
+		int record_cnt = 0;
+		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vi, *graph);
+			ai != ai_end; ++ai) {
+			if (node_type_map[*ai] == NODE_TYPE::NODE_PAPER) {
+				++record_cnt;
+			}
+		}
+
+		boost::put(vertex_record, *graph, *vi, record_cnt);
+		heap.push(make_pair(record_cnt, node_label_map[*vi]));
+
+		//qDebug() << record_cnt;
+	}
+
+	//get top K records
+	//pair<int, string> topk_arr[inputK];
+	pair<int, string> *topk_arr = new pair<int, string>[inputK];
+	for (int i = 0; i < inputK; ++i) {
+		topk_arr[i] = heap.pop();
+		qDebug() << "topk[" << i << "] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
+	}
+
+
+	for (auto& n : nodeList) {
+		auto label = n->getLabel();
+		n->setColor(QColor(Qt::lightGray));
+		for (int i = 0; i < inputK; ++i) {
+			auto& p = topk_arr[i];
+			if (label.toStdString() == p.second) {
+				n->setColor(QColor(Qt::red));
+				break;
+			}
+		}
+	}
+	delete[] topk_arr;
 }
 
 void GraphItem::find_shortest_path()
@@ -529,8 +742,7 @@ void GraphItem::find_shortest_path()
 	auto node_idx_map = boost::get(vertex_index, *graph);
 	auto node_label_map = boost::get(vertex_name, *graph);
 
-	string target_start,
-		target_end;
+	string target_start, target_end;
 
 	bool isok = false;
 
@@ -643,6 +855,21 @@ void GraphItem::find_shortest_path()
 		}
 	}
 	qDebug("* path highlighting end");
+}
+
+void GraphItem::reset_color()
+{
+	for (auto& n: nodeList) {
+		if (n->getType() == NODE_PAPER) {
+			n->setColor(QColor(Qt::darkGreen));
+		} else {
+			n->setColor(QColor(Qt::green));
+		}
+	}
+	for (auto& e: edgeList) {
+		e->setColor(Qt::black);
+		e->setWidth(0);
+	}
 }
 
 void GraphItem::test()

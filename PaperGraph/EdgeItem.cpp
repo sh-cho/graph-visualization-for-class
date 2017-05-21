@@ -53,4 +53,5 @@ void EdgeItem::paint(QPainter * painter, const QStyleOptionGraphicsItem * option
 	pen.setColor(color);
 	painter->setPen(pen);
 	painter->drawLine(QLineF(x1, y1, x2, y2));
+	//painter->drawText(QPoint((x1 + x2) / 2, (y1 + y2) / 2), "hi");
 }

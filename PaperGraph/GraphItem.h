@@ -27,9 +27,11 @@ public:
 
 	//methods
 	void might_know();
-	void reset_color();
 	void topK_highlight_with_total();
+	void topK_highlight_with_target();
+	void topK_using_custom_score();
 	void find_shortest_path();
+	void reset_color();
 
 	//test
 	void test();

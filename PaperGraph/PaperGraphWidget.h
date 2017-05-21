@@ -17,6 +17,7 @@ public:
 	void read_more();
 	void might_know();
 	void topk_with_total();
+	void topk_with_target();
 	void find_shortest_path();
 	void reset_color();
 

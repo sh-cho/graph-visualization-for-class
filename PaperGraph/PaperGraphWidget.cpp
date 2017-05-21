@@ -63,6 +63,12 @@ void PaperGraphWidget::topk_with_total()
 	scene->update();
 }
 
+void PaperGraphWidget::topk_with_target()
+{
+	graphItem->topK_highlight_with_target();
+	scene->update();
+}
+
 void PaperGraphWidget::find_shortest_path()
 {
 	graphItem->find_shortest_path();

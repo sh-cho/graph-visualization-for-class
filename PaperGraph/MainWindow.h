@@ -22,7 +22,8 @@ private:
 	QAction *readMoreAct;
 	QMenu *actionMenu;
 	QAction *mightKnowAct;
-	QAction *topkAct;
+	QAction *topkWithTotalAct;
+	QAction *topKWithTargetAct;
 	QAction *resetColorAct;
 	QAction *findShortestPathAct;
 	
@@ -37,9 +38,10 @@ private:
 private slots:
 	void read_more();
 	void might_know();
-	void topk();
-	void reset_color();
+	void topK_with_total();
+	void topK_with_target();
 	void find_shortest_path();
+	void reset_color();
 	//test
 	void test();
 };

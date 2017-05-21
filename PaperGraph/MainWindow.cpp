@@ -39,18 +39,24 @@ void MainWindow::createActions()
 	readMoreAct->setStatusTip(tr("read more lines from file"));
 	connect(readMoreAct, &QAction::triggered, this, &MainWindow::read_more);
 
+
 	mightKnowAct = new QAction(tr("Might know"), this);
 	mightKnowAct->setStatusTip(tr("highlight a research you might know"));
 	connect(mightKnowAct, &QAction::triggered, this, &MainWindow::might_know);
-	topkAct = new QAction(tr("topK"), this);
-	topkAct->setStatusTip(tr("highlight who was top k papers"));
-	connect(topkAct, &QAction::triggered, this, &MainWindow::topk);
-	resetColorAct = new QAction(tr("Reset colors"), this);
-	resetColorAct->setStatusTip(tr("Reset all node's color"));
-	connect(resetColorAct, &QAction::triggered, this, &MainWindow::reset_color);
+	topkWithTotalAct = new QAction(tr("topK with total"), this);
+	topkWithTotalAct->setStatusTip(tr("highlight who was top k papers in whole graph"));
+	connect(topkWithTotalAct, &QAction::triggered, this, &MainWindow::topK_with_total);
+	topKWithTargetAct = new QAction(tr("topK with target"), this);
+	topKWithTargetAct->setStatusTip(tr("highlight who was top k papers in particular range"));
+	connect(topKWithTargetAct, &QAction::triggered, this, &MainWindow::topK_with_target);
 	findShortestPathAct = new QAction(tr("Find Shortest Path"), this);
 	findShortestPathAct->setStatusTip("Find shortest path between two node");
 	connect(findShortestPathAct, &QAction::triggered, this, &MainWindow::find_shortest_path);
+
+	resetColorAct = new QAction(tr("Reset colors"), this);
+	resetColorAct->setStatusTip(tr("Reset all node's color"));
+	connect(resetColorAct, &QAction::triggered, this, &MainWindow::reset_color);
+
 
 	testAct = new QAction(tr("test action"), this);
 	testAct->setStatusTip(tr("test test"));
@@ -64,9 +70,11 @@ void MainWindow::createMenus()
 
 	actionMenu = menuBar()->addMenu(tr("&Actions"));
 	actionMenu->addAction(mightKnowAct);
-	actionMenu->addAction(topkAct);
-	actionMenu->addAction(resetColorAct);
+	actionMenu->addAction(topkWithTotalAct);
+	actionMenu->addAction(topKWithTargetAct);
 	actionMenu->addAction(findShortestPathAct);
+
+	actionMenu->addAction(resetColorAct);
 
 	testMenu = menuBar()->addMenu(tr("&Test"));
 	testMenu->addAction(testAct);
@@ -86,19 +94,24 @@ void MainWindow::might_know()
 	graphWidget->might_know();
 }
 
-void MainWindow::topk()
+void MainWindow::topK_with_total()
 {
 	graphWidget->topk_with_total();
 }
 
-void MainWindow::reset_color()
+void MainWindow::topK_with_target()
 {
-	graphWidget->reset_color();
+	graphWidget->topk_with_target();
 }
 
 void MainWindow::find_shortest_path()
 {
 	graphWidget->find_shortest_path();
+}
+
+void MainWindow::reset_color()
+{
+	graphWidget->reset_color();
 }
 
 void MainWindow::test()
