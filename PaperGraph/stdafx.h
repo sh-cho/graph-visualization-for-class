@@ -88,7 +88,7 @@ typedef boost::adjacency_list<
 > Graph;
 typedef typename graph_traits<Graph>::edge_iterator edge_iterator;
 typedef typename graph_traits<Graph>::vertex_iterator vertex_iterator;
-//typedef boost::graph_traits<Graph>::adjacency_iterator adjacency_iterator;
+typedef boost::graph_traits<Graph>::adjacency_iterator adjacencyIterator;
 typedef boost::graph_traits<Graph>::vertex_descriptor vertex_descriptor;
 typedef square_topology<> Topology;
 typedef typename Topology::point_type Point;
@@ -110,7 +110,7 @@ namespace {
 	const int TOP_K = 5;	//상위 몇 개 아이템에 대해 highlight 할 지
 
 	/* a research you might know */
-	const char* TARGET_AUTHOR_NAME = "Shuichi Itoh";
+	//const char* TARGET_AUTHOR_NAME = "Shuichi Itoh";
 }
 
 /* boost */

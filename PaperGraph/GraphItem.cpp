@@ -243,16 +243,41 @@ void GraphItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 void GraphItem::might_know()
 {
 	// 알 수도 있는 연구원 찾기
-	vertex_iterator vi, vi_end, vtarget;
-	Graph::adjacency_iterator ai, ai_end;
-	vector<string> might_know_vec;
+	vertex_iterator vi, vi_end/*, vtarget*/;
+	vertex_descriptor vtarget;
+	/*Graph::adjacency_iterator ai, ai_end,
+		ai2, ai2_end;*/
+	adjacencyIterator ai, ai_end,
+		ai2, ai2_end;
+	vector<string> coauthor_name_vec, might_know_name_vec,
+		visited;
+	vector<string> paper_name_vec, coauthor_paper_name_vec;
+	vector<vertex_descriptor> paper_vec, coauthor_paper_vec,
+		might_know_paper_vec;
 	
+	auto node_idx_map = boost::get(vertex_index, *graph);
 	auto node_label_map = get(vertex_name, *graph);
 	auto node_type_map = get(vertex_type, *graph);
+	
+	//vertex_descriptor vvv = boost::vertex(node_idx_map[*vi], *graph);
+	//vertex_descriptor vvv = boost::vertex(node_idx_map[*ai], *graph);
+
+	//사람 지정
+	bool isok = false;
+	string target_name;
+	QInputDialog *inputDialog = new QInputDialog();
+	target_name = inputDialog->getText(nullptr, "Enter target's name", "Target node's name:",
+		QLineEdit::Normal, "Akira Idoue", &isok).toStdString();
+	if (!isok) {
+		qDebug("input cancelled");
+		return;
+	}
+	qDebug() << target_name.c_str();
+
 
 	// 회색 색칠
 	for (auto& n : nodeList) {
-		if (n->getLabel().toStdString() != TARGET_AUTHOR_NAME) {
+		if (n->getLabel().toStdString() != target_name) {
 			n->setColor(QColor(Qt::lightGray));
 		} else {
 			n->setColor(QColor(Qt::blue));
@@ -261,43 +286,160 @@ void GraphItem::might_know()
 
 	// find target node
 	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi!=vi_end; ++vi) {
-		if (node_label_map[*vi] == std::string(TARGET_AUTHOR_NAME)) {
-			vtarget = vi;
+		if (node_label_map[*vi] == target_name) {
+			vtarget = vertex(node_idx_map[*vi], *graph);
 			break;
 		}
 	}
 
-	// bfs
-	//std::queue<vertex_iterator> q;
-	//q.push(vtarget);
-	//while (!q.empty()) {
-	//	/*auto next_vi = q.front();
-	//	q.pop();
-
-	//	if (nodeType[*next_vi] == NODE_TYPE::NODE_PAPER)
-	//		continue;
-
-	//	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*next_vi, *graph);
-	//		ai != ai_end; ++ai) {
-	//		if (nodeType[*ai] == NODE_TYPE::NODE_PAPER)
-	//			continue;
-	//		else
-	//			q.push(ai);
-	//	}*/
-	//}
-
-	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vtarget, *graph);
+	visited.push_back(target_name);
+	
+	//push target's papers
+	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(vtarget, *graph);
 		ai != ai_end;
 		++ai) {
-		might_know_vec.push_back(node_label_map[*ai]);
+		//ai: 타겟 노드의 이웃 노드(paper)
+		const string& node_label = node_label_map[*ai];
+		//qDebug() << "ai: " << node_label.c_str();
+		
+		paper_vec.push_back(vertex(node_idx_map[*ai], *graph));
+		paper_name_vec.push_back(node_label);
+		
+		visited.push_back(node_label);
 	}
 
+	// find coauthor
+	for (auto paper: paper_vec) {
+		//paper: 타겟 저자의 논문
+		for (boost::tie(ai, ai_end)=boost::adjacent_vertices(paper, *graph);
+			ai!=ai_end;
+			++ai) {
+			//ai: paper의 이웃. = 저자들
+			//                  == coauthors
+			const string& node_label = node_label_map[*ai];
+			//if (node_label == target_name) {
+			//	// 중복체크
+			//	continue;
+			//}
+			if (find(visited.begin(), visited.end(), node_label) != visited.end()) {
+				continue;
+			}
+			//qDebug() << "_ai: "<< node_label.c_str();
+
+			coauthor_name_vec.push_back(node_label_map[*ai]);
+			coauthor_paper_vec.push_back(vertex(node_idx_map[*ai], *graph));
+			visited.push_back(node_label);
+		}
+	}
+
+	//push coauthors' papers
+	for (auto coauthor_paper: coauthor_paper_vec) {
+		//coauthor_paper: coauthor의 논문
+		for (boost::tie(ai, ai_end) = boost::adjacent_vertices(coauthor_paper, *graph);
+			ai != ai_end;
+			++ai) {
+			//ai: coauthor_paper의 저자들 = might know
+			//if () {
+			//	continue;
+			//}
+
+			const string& node_label = node_label_map[*ai];
+			if (find(visited.begin(), visited.end(), node_label) != visited.end()) {
+				continue;
+			}
+			//qDebug() << "_ai2: " << node_label.c_str();
+
+			might_know_paper_vec.push_back(vertex(node_idx_map[*ai], *graph));
+			coauthor_paper_name_vec.push_back(node_label);
+			visited.push_back(node_label);
+		}
+	}
+
+	// find "might know" author
+	for (auto paper: might_know_paper_vec) {
+		for (boost::tie(ai, ai_end)=boost::adjacent_vertices(paper, *graph);
+			ai!=ai_end;
+			++ai) {
+			const string& node_label = node_label_map[*ai];
+			if (find(visited.begin(), visited.end(), node_label) != visited.end()) {
+				continue;
+			}
+			//qDebug() << "_ai3: " << node_label.c_str();
+
+			might_know_name_vec.push_back(node_label);
+			visited.push_back(node_label);
+		}
+	}
+
+
 	// highlight
+	//1. might know
+	//2. coauthor
 	for (auto& n: nodeList) {
-		if (std::find(might_know_vec.begin(), might_know_vec.end(), n->getLabel().toStdString())
-			!= might_know_vec.end()) {
-			//found
+		if (n->getLabel().toStdString() == target_name) {
 			n->setColor(Qt::red);
+		}
+		else if (std::find(paper_name_vec.begin(), paper_name_vec.end(), n->getLabel().toStdString())
+			!= paper_name_vec.end()) {
+			n->setColor("#ff8c00");
+		}
+		else if (std::find(coauthor_name_vec.begin(), coauthor_name_vec.end(), n->getLabel().toStdString())
+			!= coauthor_name_vec.end()) {
+			//coauthor
+			n->setColor(Qt::yellow);
+		}
+		else if (std::find(coauthor_paper_name_vec.begin(), coauthor_paper_name_vec.end(), n->getLabel().toStdString())
+			!= coauthor_paper_name_vec.end()) {
+			n->setColor(Qt::green);
+		}
+		else if (std::find(might_know_name_vec.begin(), might_know_name_vec.end(), n->getLabel().toStdString())
+			!= might_know_name_vec.end()) {
+			//might know 
+			n->setColor(Qt::blue);
+		}
+	}
+	//highlight nodes
+	//1. target - paper
+	//2. paper - coauthor
+	//3. coauthor - coauthor's paper
+	//4. coauthor's paper - might know
+	for (auto& to: paper_name_vec) {
+		//1.
+		for (auto& e: edgeList) {
+			if (e->match(to, target_name)) {
+				e->setColor(Qt::red);
+				e->setWidth(3);
+			}
+		}
+	}
+	for (auto& from: paper_name_vec) {
+		for (auto& to: coauthor_name_vec) {
+			for (auto& e : edgeList) {
+				if (e->match(from, to)) {
+					e->setColor("#ff8c00");
+					e->setWidth(3);
+				}
+			}
+		}
+	}
+	for (auto& from : coauthor_name_vec) {
+		for (auto& to : coauthor_paper_name_vec) {
+			for (auto& e : edgeList) {
+				if (e->match(from, to)) {
+					e->setColor(Qt::yellow);
+					e->setWidth(3);
+				}
+			}
+		}
+	}
+	for (auto& from : coauthor_paper_name_vec) {
+		for (auto& to : might_know_name_vec) {
+			for (auto& e : edgeList) {
+				if (e->match(from, to)) {
+					e->setColor(Qt::green);
+					e->setWidth(3);
+				}
+			}
 		}
 	}
 }
@@ -310,6 +452,10 @@ void GraphItem::reset_color()
 		} else {
 			n->setColor(QColor(Qt::green));
 		}
+	}
+	for (auto& e: edgeList) {
+		e->setColor(Qt::black);
+		e->setWidth(0);
 	}
 }
 
@@ -334,6 +480,7 @@ void GraphItem::topK_highlight_with_total()
 	//}
 
 	// <record, label>
+	//저자별 논문 수 계산
 	TopKHeap<pair<int, string>> heap(TOP_K);
 	for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
 		if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
@@ -489,8 +636,7 @@ void GraphItem::find_shortest_path()
 	size_t paths_sz = paths.size();
 	for (int i = 0; i < paths_sz - 1; ++i) {
 		for (auto& e : edgeList) {
-			if ((e->getFrom().toStdString() == paths[i] && e->getTo().toStdString() == paths[i + 1])
-				|| (e->getFrom().toStdString() == paths[i + 1] && e->getTo().toStdString() == paths[i])) {
+			if (e->match(paths[i], paths[i+1])) {
 				e->setColor(QColor(Qt::blue));
 				e->setWidth(3);
 			}
@@ -503,7 +649,62 @@ void GraphItem::test()
 {
 	qDebug("* test action start");
 
+	//지정한 사람 주변 topk coloring
 
+
+
+
+	//vertex_iterator vi, vi_end;
+	//Graph::adjacency_iterator ai, ai_end;
+
+
+
+	//
+	// <record, label>
+	//TopKHeap<pair<int, string>> heap(TOP_K);
+	//for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
+	//	if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
+	//		continue;
+	//	}
+
+	//	int record_cnt = 0;
+	//	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vi, *graph);
+	//		ai != ai_end; ++ai) {
+	//		if (node_type_map[*ai] == NODE_TYPE::NODE_PAPER) {
+	//			++record_cnt;
+	//		}
+	//	}
+
+	//	boost::put(vertex_record, *graph, *vi, record_cnt);
+	//	heap.push(make_pair(record_cnt, node_label_map[*vi]));
+
+	//	//qDebug() << record_cnt;
+	//}
+
+	////get top K records
+	//pair<int, string> topk_arr[TOP_K];
+	//for (int i = 0; i < TOP_K; ++i) {
+	//	topk_arr[i] = heap.pop();
+	//	qDebug() << "topk[" << i << "] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
+	//}
+
+
+	//for (auto& n : nodeList) {
+	//	auto label = n->getLabel();
+	//	n->setColor(QColor(Qt::lightGray));
+	//	for (auto& p : topk_arr) {
+	//		if (label.toStdString() == p.second) {
+	//			n->setColor(QColor(Qt::red));
+	//			break;
+	//		}
+	//	}
+	//}
+
+
+	//전체노드 색 변경
+	for (auto& n: nodeList) {
+		n->setColor(Qt::lightGray);
+	}
 
 	qDebug("* test action end");
 }

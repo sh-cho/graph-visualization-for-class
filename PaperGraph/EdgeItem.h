@@ -30,6 +30,11 @@ public:
 	void setWidth(int w) { width = w; }
 	void setColor(QColor color) { this->color = color; }
 
+	//method
+	bool match(QString qs1, QString qs2) { return (qs1==from&&qs2==to)||(qs2==from&&qs1==to); }
+	bool match(string s1, string s2) { return this->match(QString(s1.c_str()),QString(s2.c_str())); }
+
+	//overrides
 	QRectF boundingRect() const override;
 	QPainterPath shape() const override;
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
