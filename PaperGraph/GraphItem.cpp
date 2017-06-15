@@ -876,62 +876,14 @@ void GraphItem::test()
 {
 	qDebug("* test action start");
 
-	//지정한 사람 주변 topk coloring
-
-
-
-
-	//vertex_iterator vi, vi_end;
-	//Graph::adjacency_iterator ai, ai_end;
-
-
-
-	//
-	// <record, label>
-	//TopKHeap<pair<int, string>> heap(TOP_K);
-	//for (boost::tie(vi, vi_end) = boost::vertices(*graph); vi != vi_end; ++vi) {
-	//	if (node_type_map[*vi] != NODE_TYPE::NODE_AUTHOR) {
-	//		continue;
-	//	}
-
-	//	int record_cnt = 0;
-	//	for (boost::tie(ai, ai_end) = boost::adjacent_vertices(*vi, *graph);
-	//		ai != ai_end; ++ai) {
-	//		if (node_type_map[*ai] == NODE_TYPE::NODE_PAPER) {
-	//			++record_cnt;
-	//		}
-	//	}
-
-	//	boost::put(vertex_record, *graph, *vi, record_cnt);
-	//	heap.push(make_pair(record_cnt, node_label_map[*vi]));
-
-	//	//qDebug() << record_cnt;
-	//}
-
-	////get top K records
-	//pair<int, string> topk_arr[TOP_K];
-	//for (int i = 0; i < TOP_K; ++i) {
-	//	topk_arr[i] = heap.pop();
-	//	qDebug() << "topk[" << i << "] = " << topk_arr[i].first << ", " << QString::fromStdString(topk_arr[i].second);
-	//}
-
-
-	//for (auto& n : nodeList) {
-	//	auto label = n->getLabel();
-	//	n->setColor(QColor(Qt::lightGray));
-	//	for (auto& p : topk_arr) {
-	//		if (label.toStdString() == p.second) {
-	//			n->setColor(QColor(Qt::red));
-	//			break;
-	//		}
-	//	}
-	//}
-
+	//count 테스트
 
 	//전체노드 색 변경
 	for (auto& n: nodeList) {
 		n->setColor(Qt::lightGray);
 	}
+
+
 
 	qDebug("* test action end");
 }
