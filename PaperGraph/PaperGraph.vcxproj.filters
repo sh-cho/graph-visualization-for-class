@@ -83,6 +83,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
+    <ClCompile Include="curl_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="PaperGraphWidget.h">
@@ -110,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="curl_processor.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

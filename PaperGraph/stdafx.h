@@ -29,6 +29,8 @@
 #include <boost/graph/topology.hpp>
 #include <boost/regex.hpp>
 
+#include <curl/curl.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

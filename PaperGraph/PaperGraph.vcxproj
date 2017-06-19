@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="curl_processor.cpp" />
     <ClCompile Include="EdgeItem.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_GraphicsView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -218,6 +219,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="curl_processor.h" />
     <ClInclude Include="EdgeItem.h" />
     <ClInclude Include="stdafx.h" />
     <CustomBuild Include="GraphicsView.h">
