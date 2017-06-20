@@ -15,7 +15,7 @@ public:
 	curl_processor();
 	~curl_processor();
 
-	//method
+	//methods
 public:
 
 };
