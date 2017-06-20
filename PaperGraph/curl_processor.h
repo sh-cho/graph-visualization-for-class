@@ -9,6 +9,11 @@ class curl_processor
 private:
 	CURL *curl;
 	CURLcode res;
+	std::string result_buffer;
+
+	//private func
+private:
+	size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 
 	//constructor, destructor
 public:
@@ -17,7 +22,9 @@ public:
 
 	//methods
 public:
-
+	std::string get_buffer() const { return result_buffer; }
+	void set_url(const char *url);
+	bool perform();
 };
 
 #endif // CURL_PROCESSOR_H
