@@ -75,6 +75,11 @@ void PaperGraphWidget::find_shortest_path()
 	scene->update();
 }
 
+void PaperGraphWidget::topk_with_pagerank() {
+	graphItem->topk_with_pagerank();
+	scene->update();
+}
+
 void PaperGraphWidget::reset_color()
 {
 	graphItem->reset_color();

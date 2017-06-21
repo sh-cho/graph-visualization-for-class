@@ -16,9 +16,12 @@
 #include <qmath.h>
 #include <QMessageBox>
 #include <QtGui>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
 #include <QtWidgets>
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QLegend>
+#include <QtCharts/QBarCategoryAxis>
 
 #include <boost/algorithm/string.hpp>	//boost::split
 #include <boost/bimap.hpp>
@@ -62,6 +65,8 @@ using bibtex::BibTeXEntry;
 using namespace boost;
 using namespace std;
 
+/* Qt namespaces */
+
 /* function declaration */
 size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 
@@ -69,15 +74,65 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 enum vertex_position_t { vertex_position };
 enum vertex_type_t { vertex_type };
 enum vertex_record_t { vertex_record };
-enum vertex_citation_t { vertex_citation };
+enum vertex_citation_t { vertex_citation };						//for paper
 enum vertex_pagerank_t { vertex_pagerank };
+enum vertex_category_t { vertex_category };						//for paper
+enum vertex_title_t { vertex_title };							//for paper
+enum vertex_year_t { vertex_year };								//for paper
+enum vertex_category_accuracy_t { vertex_category_accuracy };	//for paper
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
 	BOOST_INSTALL_PROPERTY(vertex, type);
 	BOOST_INSTALL_PROPERTY(vertex, record);
 	BOOST_INSTALL_PROPERTY(vertex, citation);
 	BOOST_INSTALL_PROPERTY(vertex, pagerank);
+	BOOST_INSTALL_PROPERTY(vertex, category);
+	BOOST_INSTALL_PROPERTY(vertex, title);
+	BOOST_INSTALL_PROPERTY(vertex, year);
+	BOOST_INSTALL_PROPERTY(vertex, category_accuracy);
 }
+enum PAPER_CATEGORY {
+	CS_AI,
+	CS_CL,
+	CS_CC,
+	CS_CE,
+	CS_CG,
+	CS_GT,
+	CS_CV,
+	CS_CY,
+	CS_CR,
+	CS_DS,
+	CS_DB,
+	CS_DL,
+	CS_DM,
+	CS_DC,
+	CS_ET,
+	CS_FL,
+	CS_GL,
+	CS_GR,
+	CS_AR,
+	CS_HC,
+	CS_IR,
+	CS_IT,
+	CS_LG,
+	CS_LO,
+	CS_MS,
+	CS_MA,
+	CS_MM,
+	CS_NI,
+	CS_NE,
+	CS_NA,
+	CS_OS,
+	CS_OH,
+	CS_PF,
+	CS_PL,
+	CS_RO,
+	CS_SI,
+	CS_SE,
+	CS_SD,
+	CS_SC,
+	CS_SY
+};
 enum NODE_TYPE {
 	NODE_PAPER,
 	NODE_AUTHOR
@@ -98,8 +153,12 @@ typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_type_t, int,			//타입. enum NODE_TYPE에 정의됨
 	boost::property<vertex_record_t, int,		//이웃 노드 개수
 	boost::property<vertex_citation_t, int,		//피인용수
-	boost::property<vertex_pagerank_t, double>	//페이지랭크 값
-	>>>>>
+	boost::property<vertex_pagerank_t, double,	//페이지랭크값 계산해서 저장할 property
+	boost::property<vertex_category_t, int,		//논문 주제
+	boost::property<vertex_title_t, std::string,	//논문 제목
+	boost::property<vertex_year_t, int,
+	boost::property<vertex_category_accuracy_t, double>
+	>>>>>>>>>
 	> VertexProperties;
 typedef boost::adjacency_list<
 	listS,	//outEdgeList
@@ -126,8 +185,8 @@ namespace {
 	const int NODE_SIZE = 4;
 	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
 	//const int SCREEN_SIZE = 3000;
-	const int SCREEN_SIZE = 3000;
-	const int READ_LINE_UNIT = 10;	//한 번에 몇 라인을 읽을지
+	const int SCREEN_SIZE = 500;
+	const int READ_LINE_UNIT = 100;	//한 번에 몇 라인을 읽을지
 
 	/* curl processor */
 	curl_processor _curl_processor;

@@ -52,6 +52,9 @@ void MainWindow::createActions()
 	findShortestPathAct = new QAction(tr("Find Shortest Path"), this);
 	findShortestPathAct->setStatusTip("Find shortest path between two node");
 	connect(findShortestPathAct, &QAction::triggered, this, &MainWindow::find_shortest_path);
+	topkWithPagerankAct = new QAction(tr("topK with pagerank"), this);
+	topkWithPagerankAct->setStatusTip(tr("highlight which is in top k pagerank in whole graph"));
+	connect(topkWithPagerankAct, &QAction::triggered, this, &MainWindow::topk_with_pagerank);
 
 	resetColorAct = new QAction(tr("Reset colors"), this);
 	resetColorAct->setStatusTip(tr("Reset all node's color"));
@@ -73,6 +76,7 @@ void MainWindow::createMenus()
 	actionMenu->addAction(topkWithTotalAct);
 	actionMenu->addAction(topKWithTargetAct);
 	actionMenu->addAction(findShortestPathAct);
+	actionMenu->addAction(topkWithPagerankAct);
 
 	actionMenu->addAction(resetColorAct);
 
@@ -107,6 +111,10 @@ void MainWindow::topK_with_target()
 void MainWindow::find_shortest_path()
 {
 	graphWidget->find_shortest_path();
+}
+
+void MainWindow::topk_with_pagerank() {
+	graphWidget->topk_with_pagerank();
 }
 
 void MainWindow::reset_color()

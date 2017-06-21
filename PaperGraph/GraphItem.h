@@ -8,6 +8,7 @@
 using namespace std;
 using namespace boost;
 
+//#define	CITATION_COUNT
 
 class GraphItem
 	: public QGraphicsItem
@@ -29,8 +30,9 @@ public:
 	void might_know();
 	void topK_highlight_with_total();
 	void topK_highlight_with_target();
-	void topK_using_custom_score();
+	//void topK_using_custom_score();
 	void find_shortest_path();
+	void topk_with_pagerank();
 	void reset_color();
 
 	//test

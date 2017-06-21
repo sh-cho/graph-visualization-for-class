@@ -25,6 +25,7 @@ private:
 	QAction *topkWithTotalAct;
 	QAction *topKWithTargetAct;
 	QAction *resetColorAct;
+	QAction *topkWithPagerankAct;
 	QAction *findShortestPathAct;
 	
 	//test
@@ -41,6 +42,7 @@ private slots:
 	void topK_with_total();
 	void topK_with_target();
 	void find_shortest_path();
+	void topk_with_pagerank();
 	void reset_color();
 	//test
 	void test();
