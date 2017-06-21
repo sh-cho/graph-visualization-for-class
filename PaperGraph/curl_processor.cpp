@@ -5,18 +5,18 @@
 //////////////////////////////////////////////////////////////////
 // private func
 //////////////////////////////////////////////////////////////////
-size_t curl_processor::write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
-	//copy ptr
-	std::string* p_str = (std::string*)userp;
-
-	//clear
-	if (!p_str->empty())
-	p_str->clear();
-
-	//write
-	p_str->append((char*)contents, size*nmemb);
-	return size*nmemb;
-}
+//size_t curl_processor::write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
+//	//copy ptr
+//	std::string* p_str = (std::string*)userp;
+//
+//	//clear
+//	if (!p_str->empty())
+//	p_str->clear();
+//
+//	//write
+//	p_str->append((char*)contents, size*nmemb);
+//	return size*nmemb;
+//}
 
 
 //////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ curl_processor::curl_processor() {
 	}
 
 	//set curl option
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, this->write_callback);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result_buffer);
 }
 

@@ -1,4 +1,6 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <QColor>
 #include <QComboBox>
 #include <QDebug>
@@ -47,17 +49,32 @@
 #include <utility>
 #include <vector>
 
+#include <bibtexreader.hpp>
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
+
+#include "bibtex_processor.h"
+#include "curl_processor.h"
+
+using bibtex::BibTeXEntry;
 using namespace boost;
 using namespace std;
+
+/* function declaration */
+size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 
 /* enums */
 enum vertex_position_t { vertex_position };
 enum vertex_type_t { vertex_type };
 enum vertex_record_t { vertex_record };
+enum vertex_citation_t { vertex_citation };
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
 	BOOST_INSTALL_PROPERTY(vertex, type);
 	BOOST_INSTALL_PROPERTY(vertex, record);
+	BOOST_INSTALL_PROPERTY(vertex, citation);
 }
 enum NODE_TYPE {
 	NODE_PAPER,
@@ -75,9 +92,11 @@ typedef boost::bimap<string, int> bm_type;
 typedef square_topology<>::point_type point;
 typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_name_t, std::string,
-	boost::property<vertex_position_t, point,
-	boost::property<vertex_type_t, int,
-	boost::property<vertex_record_t, int>>>>
+	boost::property<vertex_position_t, point,	//좌표값
+	boost::property<vertex_type_t, int,			//타입. enum NODE_TYPE에 정의됨
+	boost::property<vertex_record_t, int,		//이웃 노드 개수
+	boost::property<vertex_citation_t, int>
+	>>>>
 	> VertexProperties;
 typedef boost::adjacency_list<
 	listS,	//outEdgeList
@@ -108,11 +127,11 @@ namespace {
 	//const int READ_LINE_UNIT = 20;	//한 번에 몇 라인을 읽을지
 	const int READ_LINE_UNIT = 100;
 
-	/* topK */
-	//const int TOP_K = 5;	//상위 몇 개 아이템에 대해 highlight 할 지
+	/* curl processor */
+	curl_processor _curl_processor;
 
-	/* a research you might know */
-	//const char* TARGET_AUTHOR_NAME = "Shuichi Itoh";
+	/* bibtex processor */
+	bibtex_processor _bibtex_processor;
 }
 
 /* boost */

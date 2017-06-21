@@ -2,50 +2,26 @@
 #include "PaperGraphWidget.h"
 #include "MainWindow.h"
 
-size_t write_callback(void *contents, size_t size,
-	size_t nmemb, void *userp) {
-	std::string* p_str = (std::string*)userp;
-	
-	//clear
-	if (!p_str->empty())
-		p_str->clear();
-
-	//write
-	p_str->append((char*)contents, size*nmemb);
-	return size*nmemb;
-}
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	if (1) {
-		CURL *curl;
-		CURLcode res;
-		std::string read_buffer;
+		_curl_processor.set_url("http://dblp.uni-trier.de/rec/bib1/conf/sbrn/WedemannCD06");
+		_curl_processor.perform();
+		printf("%s", _curl_processor.get_buffer().c_str());
+		
+		_bibtex_processor.read(_curl_processor.get_buffer());
+		std::string doi;
+		_bibtex_processor.get_value("doi", doi);
 
-		curl = curl_easy_init();
-		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, "http://dblp.uni-trier.de/rec/bib/conf/sbrn/WedemannCD06");
-			/* example.com is redirected, so we tell libcurl to follow redirection */
-			
-			//write option
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &read_buffer);
+		std::string address = std::string("http://api.crossref.org/works/")+doi;
+		_curl_processor.set_url(address.c_str());
+		_curl_processor.perform();
 
-			/* Perform the request, res will get the return code */
-			res = curl_easy_perform(curl);
-			res = curl_easy_perform(curl);
+		printf("json: %s\n", _curl_processor.get_buffer().c_str());
 
+		//rapidjson test
+		rapidjson::Document d;
+		d.Parse(_curl_processor.get_buffer().c_str());
 
-			printf("%s\n", read_buffer.c_str());
-
-			/* Check for errors */
-			if (res != CURLE_OK)
-				fprintf(stderr, "curl_easy_perform() failed: %s\n",
-					curl_easy_strerror(res));
-
-			/* always cleanup */
-			curl_easy_cleanup(curl);
-		}
 		return 0;
 	}
 

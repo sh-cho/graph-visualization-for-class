@@ -86,6 +86,9 @@
     <ClCompile Include="curl_processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bibtex_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="PaperGraphWidget.h">
@@ -115,6 +118,9 @@
       <Filter>PCH</Filter>
     </ClInclude>
     <ClInclude Include="curl_processor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bibtex_processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
