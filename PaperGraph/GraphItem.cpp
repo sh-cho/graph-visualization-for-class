@@ -921,12 +921,23 @@ void GraphItem::test()
 	auto node_citation_map = boost::get(vertex_citation, *graph);
 	auto node_label_map = boost::get(vertex_name, *graph);
 	auto node_type_map = boost::get(vertex_type, *graph);
+	auto node_pagerank_map = boost::get(vertex_pagerank, *graph);
 	vertex_iterator vi, vi_end;
 	for (boost::tie(vi, vi_end) = vertices(*graph); vi != vi_end; ++vi) {
 		if (node_type_map[*vi] != NODE_TYPE::NODE_PAPER) continue;
 		printf("%s, %d\n", node_label_map[*vi].c_str(),
 			node_citation_map[*vi]);
 	}
+
+	//page_rank();
+	qDebug("* pagerank start");
+	boost::graph::page_rank(*graph, node_pagerank_map);
+	for (boost::tie(vi, vi_end) = vertices(*graph); vi != vi_end; ++vi) {
+		printf("%s\t\t%f\n", node_label_map[*vi].c_str(),
+			node_pagerank_map[*vi]);
+	}
+	qDebug("* pagerank end");
+
 
 
 	qDebug("* test action end");

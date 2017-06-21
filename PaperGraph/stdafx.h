@@ -27,6 +27,7 @@
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/fruchterman_reingold.hpp>
 #include <boost/graph/graph_traits.hpp>
+#include <boost/graph/page_rank.hpp>
 #include <boost/graph/random_layout.hpp>
 #include <boost/graph/topology.hpp>
 #include <boost/regex.hpp>
@@ -69,11 +70,13 @@ enum vertex_position_t { vertex_position };
 enum vertex_type_t { vertex_type };
 enum vertex_record_t { vertex_record };
 enum vertex_citation_t { vertex_citation };
+enum vertex_pagerank_t { vertex_pagerank };
 namespace boost {
 	BOOST_INSTALL_PROPERTY(vertex, position);
 	BOOST_INSTALL_PROPERTY(vertex, type);
 	BOOST_INSTALL_PROPERTY(vertex, record);
 	BOOST_INSTALL_PROPERTY(vertex, citation);
+	BOOST_INSTALL_PROPERTY(vertex, pagerank);
 }
 enum NODE_TYPE {
 	NODE_PAPER,
@@ -94,8 +97,9 @@ typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_position_t, point,	//좌표값
 	boost::property<vertex_type_t, int,			//타입. enum NODE_TYPE에 정의됨
 	boost::property<vertex_record_t, int,		//이웃 노드 개수
-	boost::property<vertex_citation_t, int>		//피인용수
-	>>>>
+	boost::property<vertex_citation_t, int,		//피인용수
+	boost::property<vertex_pagerank_t, double>	//페이지랭크 값
+	>>>>>
 	> VertexProperties;
 typedef boost::adjacency_list<
 	listS,	//outEdgeList
@@ -122,9 +126,8 @@ namespace {
 	const int NODE_SIZE = 4;
 	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
 	//const int SCREEN_SIZE = 3000;
-	const int SCREEN_SIZE = 500;
-	const int READ_LINE_UNIT = 100;	//한 번에 몇 라인을 읽을지
-	//const int READ_LINE_UNIT = 100;
+	const int SCREEN_SIZE = 3000;
+	const int READ_LINE_UNIT = 10;	//한 번에 몇 라인을 읽을지
 
 	/* curl processor */
 	curl_processor _curl_processor;
