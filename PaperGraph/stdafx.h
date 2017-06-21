@@ -55,6 +55,7 @@
 
 #include "bibtex_processor.h"
 #include "curl_processor.h"
+#include "json_processor.h"
 
 using bibtex::BibTeXEntry;
 using namespace boost;
@@ -93,7 +94,7 @@ typedef boost::property<vertex_index_t, int,
 	boost::property<vertex_position_t, point,	//좌표값
 	boost::property<vertex_type_t, int,			//타입. enum NODE_TYPE에 정의됨
 	boost::property<vertex_record_t, int,		//이웃 노드 개수
-	boost::property<vertex_citation_t, int>
+	boost::property<vertex_citation_t, int>		//피인용수
 	>>>>
 	> VertexProperties;
 typedef boost::adjacency_list<
@@ -122,14 +123,17 @@ namespace {
 	const int LAYOUT_MODE = GRAPH_LAYOUT::RANDOM_LAYOUT;
 	//const int SCREEN_SIZE = 3000;
 	const int SCREEN_SIZE = 500;
-	//const int READ_LINE_UNIT = 20;	//한 번에 몇 라인을 읽을지
-	const int READ_LINE_UNIT = 100;
+	const int READ_LINE_UNIT = 100;	//한 번에 몇 라인을 읽을지
+	//const int READ_LINE_UNIT = 100;
 
 	/* curl processor */
 	curl_processor _curl_processor;
 
 	/* bibtex processor */
 	bibtex_processor _bibtex_processor;
+
+	/* json processor */
+	json_processor _json_processor;
 }
 
 /* boost */

@@ -35,6 +35,7 @@ void GraphItem::read_more()
 	auto node_position_map = boost::get(vertex_position, *graph);
 	auto node_label_map = boost::get(vertex_name, *graph);
 	auto node_type_map = boost::get(vertex_type, *graph);
+	auto node_citation_map = boost::get(vertex_citation, *graph);
 
 	int line_cnt = 0;
 	qDebug() << "* graph reading start";
@@ -110,15 +111,49 @@ void GraphItem::read_more()
 
 		//qDebug() << "** index: " << i << ", name: " << node_label.c_str();
 
-		//node type 설정
+		//node type에 따라
 		if (boost::regex_match(node_label, paper_reg)) {
-			//Paper
+			//Paper일 경우
+			//vertex type 설정
 			boost::put(vertex_type, *graph, *vi, NODE_TYPE::NODE_PAPER);
+
+			//citation counting
+			//bibtex 다운로드
+			std::string dblp_url = std::string("http://dblp.uni-trier.de/rec/bib1/") + node_label;
+			_curl_processor.set_url(dblp_url.c_str());
+			_curl_processor.perform();
+
+			//bibtex 파싱
+			_bibtex_processor.read(_curl_processor.get_buffer());
+			
+			std::string doi;
+			if (!_bibtex_processor.get_value("doi", doi)) {
+				//doi가 없는 경우
+				node_citation_map[*vi] = 0;	//citation count 0으로 설정
+			}
+			else {
+				//doi가 존재하는 경우
+				std::string json_address = std::string("http://api.crossref.org/works/") + doi;
+				_curl_processor.set_url(json_address.c_str());
+				_curl_processor.perform();
+
+				_json_processor.read_json(_curl_processor.get_buffer());
+				if (!_json_processor.is_ok()) {
+					node_citation_map[*vi] = 0;
+				}
+				else {
+					node_citation_map[*vi] = _json_processor.get_citation_count();
+				}
+			}
 		} else {
 			//Author
 			boost::put(vertex_type, *graph, *vi, NODE_TYPE::NODE_AUTHOR);
 		}
 
+		
+
+		//counter
+		//printf("%d end: %s\n", i, node_label.c_str());
 		++i;
 	}
 	qDebug() << "* set vertex property end";
@@ -876,13 +911,22 @@ void GraphItem::test()
 {
 	qDebug("* test action start");
 
-	//count 테스트
 
 	//전체노드 색 변경
 	for (auto& n: nodeList) {
 		n->setColor(Qt::lightGray);
 	}
 
+	//citation 디버그
+	auto node_citation_map = boost::get(vertex_citation, *graph);
+	auto node_label_map = boost::get(vertex_name, *graph);
+	auto node_type_map = boost::get(vertex_type, *graph);
+	vertex_iterator vi, vi_end;
+	for (boost::tie(vi, vi_end) = vertices(*graph); vi != vi_end; ++vi) {
+		if (node_type_map[*vi] != NODE_TYPE::NODE_PAPER) continue;
+		printf("%s, %d\n", node_label_map[*vi].c_str(),
+			node_citation_map[*vi]);
+	}
 
 
 	qDebug("* test action end");
