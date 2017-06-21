@@ -52,8 +52,6 @@
 #include <bibtexreader.hpp>
 
 #include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
 
 #include "bibtex_processor.h"
 #include "curl_processor.h"

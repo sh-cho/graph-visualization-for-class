@@ -22,6 +22,21 @@ int main(int argc, char *argv[]) {
 		rapidjson::Document d;
 		d.Parse(_curl_processor.get_buffer().c_str());
 
+		rapidjson::Value& value_status = d["status"];
+		std::string status_str = value_status.GetString();
+		printf("status: %s\n", status_str.c_str());
+
+		//if (status_str != "ok") {
+		//	printf("status: %s\n", status_str.c_str());
+		//	printf("not ok\n");
+		//	return 1;
+		//}
+
+		rapidjson::Value& value_message = d["message"];
+		rapidjson::Value& citation_count = value_message["is-referenced-by-count"];
+		int cit_cnt = citation_count.GetInt();
+		printf("citation: %d\n", cit_cnt);
+
 		return 0;
 	}
 
