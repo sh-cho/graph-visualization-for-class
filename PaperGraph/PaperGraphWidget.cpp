@@ -80,6 +80,11 @@ void PaperGraphWidget::topk_with_pagerank() {
 	scene->update();
 }
 
+void PaperGraphWidget::category_visualize() {
+	graphItem->category_visualize();
+	scene->update();
+}
+
 void PaperGraphWidget::reset_color()
 {
 	graphItem->reset_color();

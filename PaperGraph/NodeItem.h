@@ -12,6 +12,9 @@ private:
 	QColor color;
 	QString label;
 	int type;
+	int category;
+	double category_accuracy;
+	int year;
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -19,11 +22,15 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-	NodeItem(double x, double y, QColor color, QString label, int type);
+	NodeItem(double x, double y, QColor color, QString label, int type, int category,
+		double _accuracy, int year);
 
 	//getter setter
 	QString getLabel() {return label;}
 	int getType() { return type; }
+	int getCategory() { return category; }
+	double getAccuracy() { return category_accuracy; }
+	int getYear() { return year; }
 	void setColor(QColor color) {this->color=color;}
 
 	QRectF boundingRect() const override;

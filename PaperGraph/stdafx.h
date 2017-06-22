@@ -196,6 +196,60 @@ namespace {
 
 	/* json processor */
 	json_processor _json_processor;
+
+	/* category keywords */
+	vector<vector<string>> keywords{
+		{ "LANGUAGE", "TRANSLATION", "TEXT", "PHRASE", "PARAGRAPH" },
+		{ "COMPLEXITY", "EXPONENTIALLY", "FOURIER", "CASCADE", "NP-COMPLETE" },
+		{ "ENGINEERING", "FINANCE", "STOCHASTIC", "BUSINESS", "DAMAGE" },
+		{ "GEOMETRY", "COLLINEAR", "DISTANCE", "DIMENSION", "GEOMETRIC" },
+		{ "GAME", "GAMES", "INTERFERENCE", "REVENUE", "AGGREGATIVE" },
+		{ "VISION", "PATTERN", "RECOGNITION", "FEATURE", "FIXATION" },
+		{ "SOCIETY", "MEDIA", "SOCIAL", "MOBILE", "EVENT" },
+		{ "CRYPTOGRAPHY", "SECURITY", "CODE", "CRYPTOSYSTEM" },
+		{ "GRAPH", "POLYNOMIAL" },
+		{ "DATABASE", "DATA", "JOIN", "TRANSACTION" },
+		{ "LIBRARY", "PREPRINT", "RESEARCH" },
+		{ "DISCRETE", "COMBINATORIC" },
+		{ "DISTRIBUTED", "PARALLEL", "CLUSTER", "CLOUD" },
+		{ "NEUTRON", "QUANTUM" },
+		{ "LANGUAGE", "AUTOMATA" },
+		{ "LITERATURE" },
+		{ "GAUSSIAN", "3D", "SHAPE", "GRAPHIC" },
+		{ "HARDWARE", "CAMERA", "CACHE", "ENERGY", "HYBRID" },
+		{ "PERSON", "INDOOR", "HUMAN" },
+		{ "MINING", "MICROBLOG", "METADATA" },
+		{ "UPLINK", "INFORMATION" },
+		{ "LEARNING", "DEEP", "NEURAL", "GAN", "CNN", "RNN" },
+		{ "LOGIC", "HEURISTIC" },
+		{ "MATHE", "MATRIX", "LINEAR", "ALGEBRA" },
+		{ "MULTI-AGENT", "AGENT", "COLLABORATIVE", "CONVERGENCE" },
+		{ "CODEC", "MEDIA", "AUDIO", "IMAGE" },
+		{ "NETWORK", "INTERNET", "CLOUD", "SDN" },
+		{ "NEURAL", "EVOLUTION", "LEARNING" },
+		{ "NUMERICALLY", "NUMERICAL" },
+		{ "SCHEDULING", "PREFETCHING", "VM", "SYSTEM", "LINUX" },
+		{},
+		{ "PERFORMANCE", "HIGH", "ADAPTIVE" },
+		{ "GRAMMAR", "PROGRAM" },
+		{ "ROBOT", "ROBOTIC", "HARVESTER", "CRAWLER" },
+		{ "SOCIAL", "INFORMATION", "LOCATION", "EVENT", "MICROBLOG" },
+		{ "SOFTWARE", "ENGINEERING", "PROTOTYPE", "DEVELOPMENT" },
+		{ "MULTI-CHANNEL", "ACOUSTIC", "AUDIO", "AUTOENCODER" },
+		{ "SYMBOLIC", "FUNCTION", "COEFFICIENT" },
+		{ "SYSTEM", "SENSORY", "TRANSFORMER", "CONTROL" }
+	};
+
+	vector<string> category_colors{
+		"#694842","#325eee","#38cff1","#0b7d18","#20a920",
+		"#ce112f","#479c12","#7cb382","#c4d5cb","#d52840",
+		"#b6070e","#f1c50b","#181ce4","#6ed976","#abecdc",
+		"#ddb390","#298d3e","#e48b31","#183083","#a03350",
+		"#309c0c","#75fa48","#6ce15c","#82dee1","#845576",
+		"#b9c3fb","#e59908","#30827a","#0658d1","#8b921c",
+		"#fa7529","#b91ad2","#545e87","#cb6eae","#c2d4ba",
+		"#dffa88","#5942d5","#32add6","#99443f","#c85b70"
+	};
 }
 
 /* boost */

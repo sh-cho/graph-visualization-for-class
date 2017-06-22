@@ -159,17 +159,52 @@ void GraphItem::read_more()
 			year = stoi(year_str);
 			node_title_map[*vi] = title;
 			node_year_map[*vi] = year;
-#endif // CITATION_COUNT
-
+			
 			//카테고리 계산 및 accuracy 계산
 			//--> case insensitive
-			
+			double max_acc = -1;
+			int max_acc_idx;
+			vector<string> title_words;
+			for (int j = 0; j < keywords.size(); ++j) {
+				auto& paper_category = keywords[j];
+				const int& category_sz = paper_category.size();
+				int match_cnt = 0;
+
+				//논문제목을 word들로 분할
+				boost::split(title_words, title, boost::is_any_of(" "), boost::token_compress_on);
+				for (auto& keyword : paper_category) {	
+					//각 word마다 수행
+					for (auto& word: title_words) {
+						if (boost::iequals(word, keyword)) {
+							++match_cnt;
+							break;
+						}
+					}
+				}
+
+				double acc = (double)match_cnt / category_sz;
+				if (max_acc < acc && match_cnt != 0) {
+					max_acc = acc;
+					max_acc_idx = j;
+				}
+			}
+			if (max_acc_idx == keywords.size() - 1
+				&& max_acc != -1) {
+				//no category detected
+				node_category_map[*vi] = CS_OH;
+				node_category_accuracy_map[*vi] = 0.0;
+			}
+			else {
+				node_category_map[*vi] = max_acc_idx;
+				node_category_accuracy_map[*vi] = max_acc;
+			}
+
+
+#endif // CITATION_COUNT
 		} else {
 			//Author
 			boost::put(vertex_type, *graph, *vi, NODE_TYPE::NODE_AUTHOR);
 		}
-
-		
 
 		//counter
 		//printf("%d end: %s\n", i, node_label.c_str());
@@ -255,10 +290,12 @@ void GraphItem::read_more()
 		//make node item and push it to list
 		NodeItem *node;
 		if (nt == NODE_TYPE::NODE_PAPER) {
-			node = new NodeItem(p[0], p[1], QColor(Qt::darkGreen), QString(name.c_str()), nt);
+			node = new NodeItem(p[0], p[1], QColor(Qt::darkGreen), QString(name.c_str()), nt,
+				node_category_map[*vi], node_category_accuracy_map[*vi], node_year_map[*vi]);
 		}
 		else {
-			node = new NodeItem(p[0], p[1], QColor(Qt::green), QString(name.c_str()), nt);
+			node = new NodeItem(p[0], p[1], QColor(Qt::green), QString(name.c_str()), nt,
+				-1, -1, -1);
 		}
 		node->setPos(QPointF(p[0], p[1]));
 		nodeList << node;
@@ -963,6 +1000,17 @@ void GraphItem::topk_with_pagerank() {
 		}
 	}
 	delete[] topk_arr;
+}
+
+void GraphItem::category_visualize() {
+	//전체노드 색 변경
+	for (auto& n : nodeList) {
+		n->setColor(Qt::lightGray);
+
+		if (n->getType() == NODE_TYPE::NODE_AUTHOR) continue;
+
+		n->setColor(QColor(category_colors[n->getCategory()].c_str()));
+	}
 }
 
 void GraphItem::reset_color()

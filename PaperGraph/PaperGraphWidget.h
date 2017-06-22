@@ -20,6 +20,7 @@ public:
 	void topk_with_target();
 	void find_shortest_path();
 	void topk_with_pagerank();
+	void category_visualize();
 	void reset_color();
 
 	//test

@@ -22,7 +22,8 @@ void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 {
 }
 
-NodeItem::NodeItem(double x, double y, QColor color, QString label, int type)
+NodeItem::NodeItem(double x, double y, QColor color, QString label, int type, int category,
+	double _accuracy, int year)
 {
 	//node constructor
 	this->x = x;
@@ -30,6 +31,9 @@ NodeItem::NodeItem(double x, double y, QColor color, QString label, int type)
 	this->color = color;
 	this->label = label;
 	this->type = type;
+	this->category = category;
+	this->category_accuracy = _accuracy;
+	this->year = year;
 	setZValue(1);
 	
 	//setFlags(ItemIsSelectable | ItemIsMovable);

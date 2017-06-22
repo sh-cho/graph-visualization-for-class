@@ -27,6 +27,7 @@ private:
 	QAction *resetColorAct;
 	QAction *topkWithPagerankAct;
 	QAction *findShortestPathAct;
+	QAction *categoryVisualizeAct;
 	
 	//test
 	QMenu *testMenu;
@@ -43,6 +44,7 @@ private slots:
 	void topK_with_target();
 	void find_shortest_path();
 	void topk_with_pagerank();
+	void category_visualize();
 	void reset_color();
 	//test
 	void test();
